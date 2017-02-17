@@ -1,0 +1,123 @@
+---
+info:
+  name: "Preprocessing_FastQ_to_BAM"
+  desc: "Ghislain Fournous"
+  log_dir: "Logs"
+
+
+workflow_steps:
+
+
+#
+# Mapping
+#
+
+-
+  tool: "BWA_MEM"
+  id: "bwa_mem_loop"
+  desc: "BWA-mem"
+  depend_from: ""
+  step_options:
+    bwa_bin: "bwa"
+    core: 16
+    input_dir: "Samples"
+    input_name: "*"
+    input_extension: "fastq.gz"
+    input_R1_tag: "R1"
+    input_R2_tag: "R2"
+    output_dir: "01_mapping_bwa"
+    output_suffix: "_map"
+    read_groups:
+      split: "_"
+      ID: "G"
+      SM: 0
+      LB: "RH"
+      PL: "ILLUMINA"
+    bwa_index: "/References/human_g1k_v37_decoy.fasta"
+  command_line_options:
+    bwa:
+      - "-M"
+
+
+#
+# PreProcessing
+#
+
+-
+  tool: "Picard2"
+  id: "Picard_SortSam"
+  desc: "picard sorting"
+  depend_from: ["bwa_mem_loop"]
+  step_options:
+    input_dir: "01_mapping_bwa"
+    input_files: "*.sam"
+    output_dir: "02_bamsorted"
+    output_suffix: "_sorted"
+    java_bin: "java8"
+    picard2_jar: "/Jar/picard.jar"
+    picard2_command: "SortSam"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=./TMP"
+    picard2:
+      - "CREATE_INDEX=true"
+      - "MAX_RECORDS_IN_RAM=1000000"
+      - "SORT_ORDER=coordinate"
+      - "VALIDATION_STRINGENCY=LENIENT"
+
+-
+  tool: "Picard2"
+  id: "picard_mark_duplicate"
+  desc: "picard mark duplicate and merge lanes"
+  depend_from: ["Picard_SortSam"]
+  step_options:
+    input_dir: "02_bamsorted"
+    input_files: "*.bam"
+    output_dir: "03_markdup"
+    output_suffix: "_markdup"
+    java_bin: "java8"
+    picard2_jar: "/Jar/picard.jar"
+    picard2_command: "MarkDuplicates"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=./TMP"
+    picard2:
+      - "METRICS_FILE=samples.metrics"
+      - "VALIDATION_STRINGENCY=LENIENT"
+      - "CREATE_INDEX=true"
+      - "MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1000"
+
+-
+  tool: "GATK_BaseRecalibrator_PrintReads"
+  id: "GATK_BaseRecalibrator"
+  desc: "GATK Fix Mate Base Recalibration"
+  depend_from: ["picard_mark_duplicate"]
+  result: "true"
+  step_options:
+    core: 10
+    input_dir: "03_markdup"
+    input_files: "*.bam"
+    output_dir: "04_gatk_recal"
+    output_suffix: "_recalib"
+    java_bin: "java8"
+    gatk_jar: "/Jar/GenomeAnalysisTK.jar"
+    ref_path:   "/References/human_g1k_v37_decoy.fasta"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=./TMP"
+    gatk:
+      - " --phone_home NO_ET --gatk_key /Jar/Fournous.Ghislain_rr-research.no.key "
+    gatk_recal:
+      - " -knownSites /References/1000g.vcf "
+      - " -knownSites /References/mills.vcf "
+      - " -knownSites /References/dbsnp.vcf "
+      - " -cov ContextCovariate "
+      - " -cov CycleCovariate "
+    gatk_PrintReads:
+      - ""
+
+
+

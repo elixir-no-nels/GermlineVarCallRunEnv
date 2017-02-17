@@ -1,0 +1,134 @@
+---
+info:
+  name: "Germline_variant_calling"
+  desc: "Lars Birger Aasheim"
+  log_dir: "Logs"
+
+
+workflow_steps:
+
+#
+# Germline variant Calling
+#
+
+-
+  tool: "GATK_HaplotypeCaller"
+  id: "GATK_HaplotypeCaller_loop"
+  desc: "Call Variants from Bam"
+  depend_from: ""
+  step_options:
+    input_dir: "04_gatk_recal"
+    input_files: "*.bam"
+    output_dir: "11_Haplotypes"
+    output_suffix: "haplotype"
+    gatk_jar: "/Jar/GenomeAnalysisTK.jar"
+    core: 1 # This is a risky setting due to a random crash risk. Use at your own risk. Values over 8 are often detrimental to performance.
+    java_bin: "java8"
+    ref_path:   "/References/human_g1k_v37_decoy.fasta"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=./TMP"
+    gatk:
+      - "--phone_home NO_ET --gatk_key /Jar/Fournous.Ghislain_rr-research.no.key "
+    gatk_HaplotypeCaller:
+      - "--emitRefConfidence GVCF "
+      - "--variant_index_type LINEAR "
+      - "--variant_index_parameter 128000"
+
+
+#
+# Merging
+#
+
+-
+  tool: "GATK_GenotypeGVCFs"
+  id: "GATK_GenotypeGVCFs_merge"
+  desc: "Merge all VCF"
+  depend_from: ["GATK_HaplotypeCaller_loop"]
+  step_options:
+    input_dir: "11_Haplotypes"
+    input_files: "*.vcf"
+    output_dir: "12_Genotypes"
+    output_suffix: "_haplotype"
+    gatk_jar: "/Jar/GenomeAnalysisTK.jar"
+    core: 20
+    java_bin: "java8"
+    ref_path:   "/References/human_g1k_v37_decoy.fasta"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=./TMP"
+    gatk:
+      - "--phone_home NO_ET --gatk_key /Jar/Fournous.Ghislain_rr-research.no.key "
+    gatk_GVCF:
+      - ""
+
+#
+# Recalibration
+#
+
+-
+  tool: "GATK_VariantRecalibratorApplied"
+  id: "GATK_VariantRecalibratorApplied_INDEL"
+  desc: "Variant Recalibration for Indels"
+  depend_from: ["GATK_GenotypeGVCFs_merge"]
+  result: "true"
+  step_options:
+    input_dir: "12_Genotypes"
+    input_files: "*.vcf"
+    output_dir: "13_variants_INDELs"
+    output_suffix: "INDEL"
+    gatk_jar: "/Jar/GenomeAnalysisTK.jar"
+    core: 20
+    java_bin: "java8"
+    ref_path:   "/References/human_g1k_v37_decoy.fasta"
+    mode: "INDEL"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=./TMP"
+    gatk:
+      - "--phone_home NO_ET --gatk_key /Jar/Fournous.Ghislain_rr-research.no.key "
+    gatk_vr:
+      - "-resource:mills,known=true,training=true,truth=true,prior=12.0 /References/mills.vcf "
+      - "-an QD -an FS -an SOR -an ReadPosRankSum -an MQRankSum "
+      - "-tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.5 -tranche 99.0 -tranche 97.0 -tranche 96.0 -tranche 95.0 -tranche 94.0 "
+      - "-tranche 93.5 -tranche 93.0 -tranche 92.0 -tranche 91.0 -tranche 90.0 "
+    gatk_ar:
+      - "--ts_filter_level 95.0 "
+
+-
+  tool: "GATK_VariantRecalibratorApplied"
+  id: "GATK_VariantRecalibratorApplied_SNPs"
+  desc: "Variant Recalibration for SNPs"
+  depend_from: ["GATK_GenotypeGVCFs_merge"]
+  result: "true"
+  step_options:
+    input_dir: "12_Genotypes"
+    input_files: "*.vcf"
+    output_dir: "13_variants_SNPs"
+    output_suffix: "SNPs"
+    gatk_jar: "/Jar/GenomeAnalysisTK.jar"
+    core: 20
+    java_bin: "java8"
+    ref_path:   "/References/human_g1k_v37_decoy.fasta"
+    mode: "SNP"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=./TMP"
+    gatk:
+      - "--phone_home NO_ET --gatk_key /Jar/Fournous.Ghislain_rr-research.no.key "
+    gatk_vr:
+      - "-resource:omni,known=false,training=true,truth=true,prior=12.0 /References/omni.vcf "
+      - "-resource:1000G,known=false,training=true,truth=false,prior=10.0 /References/1000g.vcf "
+      - "-resource:dbsnp,known=true,training=false,truth=false,prior=2.0 /References/dbsnp.vcf "
+      - "-resource:hapmap,known=false,training=true,truth=true,prior=15.0 /References/hapmap.vcf "
+      - "-an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR "
+      - "-tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.6 -tranche 99.5 -tranche 99.4 "
+      - "-tranche 99.3 -tranche 99.0 -tranche 98.0 -tranche 97.0 -tranche 90.0"
+    gatk_ar:
+      - "--ts_filter_level 99.6 "
+
+
