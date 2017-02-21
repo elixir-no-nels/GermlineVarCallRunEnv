@@ -53,7 +53,7 @@ workflow_steps:
     input_files: "*.sam"
     output_dir: "02_bamsorted"
     output_suffix: "_sorted"
-    java_bin: "java8"
+    java_bin: "java"
     picard2_jar: "/Jar/picard.jar"
     picard2_command: "SortSam"
   command_line_options:
@@ -76,7 +76,7 @@ workflow_steps:
     input_files: "*.bam"
     output_dir: "03_markdup"
     output_suffix: "_markdup"
-    java_bin: "java8"
+    java_bin: "java"
     picard2_jar: "/Jar/picard.jar"
     picard2_command: "MarkDuplicates"
   command_line_options:
@@ -101,7 +101,7 @@ workflow_steps:
     input_files: "*.bam"
     output_dir: "04_gatk_recal"
     output_suffix: "_recalib"
-    java_bin: "java8"
+    java_bin: "java"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
     ref_path:   "/References/human_g1k_v37_decoy.fasta"
   command_line_options:
@@ -109,7 +109,7 @@ workflow_steps:
       - "-Xmx15G"
       - "-Djava.io.tmpdir=./TMP"
     gatk:
-      - " --phone_home NO_ET --gatk_key /Jar/Fournous.Ghislain_rr-research.no.key "
+      - " "
     gatk_recal:
       - " -knownSites /References/1000g.vcf "
       - " -knownSites /References/mills.vcf "

@@ -1,7 +1,7 @@
 #Container ID
 
 #1) Build with multithreading enabled
-IMAGE_ID="bb1f8fdea20b"
+IMAGE_ID="93c1e453d462"
 
 #User ID (Choose one of CUST_USERID definition)
 USERID=`id -u`

@@ -22,19 +22,20 @@ workflow_steps:
     output_dir: "11_Haplotypes"
     output_suffix: "haplotype"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
-    core: 1 # This is a risky setting due to a random crash risk. Use at your own risk. Values over 8 are often detrimental to performance.
-    java_bin: "java8"
+    core: 4 # This is a risky setting due to a random crash risk. Use at your own risk. Values over 8 are often detrimental to performance.
+    java_bin: "java"
     ref_path:   "/References/human_g1k_v37_decoy.fasta"
   command_line_options:
     java:
       - "-Xmx15G"
       - "-Djava.io.tmpdir=./TMP"
     gatk:
-      - "--phone_home NO_ET --gatk_key /Jar/Fournous.Ghislain_rr-research.no.key "
+      - ""
     gatk_HaplotypeCaller:
       - "--emitRefConfidence GVCF "
       - "--variant_index_type LINEAR "
       - "--variant_index_parameter 128000"
+      - "-XL hs37d5"
 
 
 #
@@ -52,15 +53,15 @@ workflow_steps:
     output_dir: "12_Genotypes"
     output_suffix: "_haplotype"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
-    core: 20
-    java_bin: "java8"
+    core: 4
+    java_bin: "java"
     ref_path:   "/References/human_g1k_v37_decoy.fasta"
   command_line_options:
     java:
       - "-Xmx15G"
       - "-Djava.io.tmpdir=./TMP"
     gatk:
-      - "--phone_home NO_ET --gatk_key /Jar/Fournous.Ghislain_rr-research.no.key "
+      - ""
     gatk_GVCF:
       - ""
 
@@ -80,8 +81,8 @@ workflow_steps:
     output_dir: "13_variants_INDELs"
     output_suffix: "INDEL"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
-    core: 20
-    java_bin: "java8"
+    core: 4
+    java_bin: "java"
     ref_path:   "/References/human_g1k_v37_decoy.fasta"
     mode: "INDEL"
   command_line_options:
@@ -89,7 +90,7 @@ workflow_steps:
       - "-Xmx15G"
       - "-Djava.io.tmpdir=./TMP"
     gatk:
-      - "--phone_home NO_ET --gatk_key /Jar/Fournous.Ghislain_rr-research.no.key "
+      - ""
     gatk_vr:
       - "-resource:mills,known=true,training=true,truth=true,prior=12.0 /References/mills.vcf "
       - "-an QD -an FS -an SOR -an ReadPosRankSum -an MQRankSum "
@@ -110,8 +111,8 @@ workflow_steps:
     output_dir: "13_variants_SNPs"
     output_suffix: "SNPs"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
-    core: 20
-    java_bin: "java8"
+    core: 4
+    java_bin: "java"
     ref_path:   "/References/human_g1k_v37_decoy.fasta"
     mode: "SNP"
   command_line_options:
@@ -119,7 +120,7 @@ workflow_steps:
       - "-Xmx15G"
       - "-Djava.io.tmpdir=./TMP"
     gatk:
-      - "--phone_home NO_ET --gatk_key /Jar/Fournous.Ghislain_rr-research.no.key "
+      - ""
     gatk_vr:
       - "-resource:omni,known=false,training=true,truth=true,prior=12.0 /References/omni.vcf "
       - "-resource:1000G,known=false,training=true,truth=false,prior=10.0 /References/1000g.vcf "
