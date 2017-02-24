@@ -1,7 +1,7 @@
 #Container ID
 
 #1) Build with multithreading enabled
-IMAGE_ID="93c1e453d462"
+IMAGE_ID="kjellptrsn/germlinevarcalldocker:latest"
 
 #User ID (Choose one of CUST_USERID definition)
 USERID=`id -u`
@@ -10,8 +10,9 @@ GROUPID=`id -g`
 CUST_USERID="-u=$USERID:$GROUPID"
 
 # Paths
-REFERENCE="/path/to/reference/files"
-DATA="/path/to/the/folder/that/contains/the/"Samples"/folder"
+REFERENCE="/your/local/path/to/Germline-varcall-wf-reference-files-v2.8"
+DATA="/path/to/the/data/folder/that/contain/the/"Samples"/input/folder"
+
 
 #Not used:
 #CUST_ENV="-e HOME=/tmp"
@@ -28,7 +29,7 @@ SCRIPT2="germline_varcall.yaml"
 
 # For Running
 docker run -t --rm $CUST_USERID -v=$REFERENCE:/References -v=$DATA:/Data -w=/Data/ $IMAGE_ID sh -c "rbFlow.rb -c $SCRIPT1 -r"
-#docker run -t --rm $CUST_USERID -v=$REFERENCE:/References -v=$DATA:/Data -w=/Data/ $IMAGE_ID sh -c "rbFlow.rb -c $SCRIPT2 -r"
+docker run -t --rm $CUST_USERID -v=$REFERENCE:/References -v=$DATA:/Data -w=/Data/ $IMAGE_ID sh -c "rbFlow.rb -c $SCRIPT2 -r"
 
 
 # ---Special Instruction for OSX ---
