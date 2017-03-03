@@ -2,7 +2,8 @@
 info:
   name: "Preprocessing_FastQ_to_BAM"
   desc: "Ghislain Fournous"
-  log_dir: "Logs"
+  log_dir: "output/Logs"
+  steps_status_dir: "output/FinishedSteps"
 
 
 workflow_steps:
@@ -20,12 +21,12 @@ workflow_steps:
   step_options:
     bwa_bin: "bwa"
     core: 16
-    input_dir: "Samples"
+    input_dir: "input"
     input_name: "*"
     input_extension: "fastq.gz"
     input_R1_tag: "R1"
     input_R2_tag: "R2"
-    output_dir: "01_mapping_bwa"
+    output_dir: "output/01_mapping_bwa"
     output_suffix: "_map"
     read_groups:
       split: "_"
@@ -33,7 +34,7 @@ workflow_steps:
       SM: 0
       LB: "RH"
       PL: "ILLUMINA"
-    bwa_index: "/References/human_g1k_v37_decoy.fasta"
+    bwa_index: "references//human_g1k_v37_decoy.fasta"
   command_line_options:
     bwa:
       - "-M"
@@ -49,9 +50,9 @@ workflow_steps:
   desc: "picard sorting"
   depend_from: ["bwa_mem_loop"]
   step_options:
-    input_dir: "01_mapping_bwa"
+    input_dir: "output/01_mapping_bwa"
     input_files: "*.sam"
-    output_dir: "02_bamsorted"
+    output_dir: "output/02_bamsorted"
     output_suffix: "_sorted"
     java_bin: "java"
     picard2_jar: "/Jar/picard.jar"
@@ -72,9 +73,9 @@ workflow_steps:
   desc: "picard mark duplicate and merge lanes"
   depend_from: ["Picard_SortSam"]
   step_options:
-    input_dir: "02_bamsorted"
+    input_dir: "output/02_bamsorted"
     input_files: "*.bam"
-    output_dir: "03_markdup"
+    output_dir: "output/03_markdup"
     output_suffix: "_markdup"
     java_bin: "java"
     picard2_jar: "/Jar/picard.jar"
@@ -97,13 +98,13 @@ workflow_steps:
   result: "true"
   step_options:
     core: 10
-    input_dir: "03_markdup"
+    input_dir: "output/03_markdup"
     input_files: "*.bam"
-    output_dir: "04_gatk_recal"
+    output_dir: "output/04_gatk_recal"
     output_suffix: "_recalib"
     java_bin: "java"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
-    ref_path:   "/References/human_g1k_v37_decoy.fasta"
+    ref_path:   "references//human_g1k_v37_decoy.fasta"
   command_line_options:
     java:
       - "-Xmx15G"
@@ -111,9 +112,9 @@ workflow_steps:
     gatk:
       - " "
     gatk_recal:
-      - " -knownSites /References/1000g.vcf "
-      - " -knownSites /References/mills.vcf "
-      - " -knownSites /References/dbsnp.vcf "
+      - " -knownSites references/1000g.vcf "
+      - " -knownSites references/mills.vcf "
+      - " -knownSites references/dbsnp.vcf "
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
     gatk_PrintReads:

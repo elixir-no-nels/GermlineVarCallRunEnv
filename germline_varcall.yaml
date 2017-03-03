@@ -3,6 +3,7 @@ info:
   name: "Germline_variant_calling"
   desc: "Lars Birger Aasheim"
   log_dir: "Logs"
+  steps_status_dir: "FinishedSteps"
 
 
 workflow_steps:
@@ -17,14 +18,14 @@ workflow_steps:
   desc: "Call Variants from Bam"
   depend_from: ""
   step_options:
-    input_dir: "04_gatk_recal"
+    input_dir: "output/04_gatk_recal"
     input_files: "*.bam"
-    output_dir: "11_Haplotypes"
+    output_dir: "output/11_Haplotypes"
     output_suffix: "haplotype"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
     core: 8 # This is a risky setting due to a random crash risk. Use at your own risk. Values over 8 are often detrimental to performance.
     java_bin: "java"
-    ref_path:   "/References/human_g1k_v37_decoy.fasta"
+    ref_path:   "references//human_g1k_v37_decoy.fasta"
   command_line_options:
     java:
       - "-Xmx15G"
@@ -48,14 +49,14 @@ workflow_steps:
   desc: "Merge all VCF"
   depend_from: ["GATK_HaplotypeCaller_loop"]
   step_options:
-    input_dir: "11_Haplotypes"
+    input_dir: "output/11_Haplotypes"
     input_files: "*.vcf"
-    output_dir: "12_Genotypes"
+    output_dir: "output/12_Genotypes"
     output_suffix: "_haplotype"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
     core: 4
     java_bin: "java"
-    ref_path:   "/References/human_g1k_v37_decoy.fasta"
+    ref_path:   "references//human_g1k_v37_decoy.fasta"
   command_line_options:
     java:
       - "-Xmx15G"
@@ -76,14 +77,14 @@ workflow_steps:
   depend_from: ["GATK_GenotypeGVCFs_merge"]
   result: "true"
   step_options:
-    input_dir: "12_Genotypes"
+    input_dir: "output/12_Genotypes"
     input_files: "*.vcf"
-    output_dir: "13_variants_INDELs"
+    output_dir: "output/13_variants_INDELs"
     output_suffix: "INDEL"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
     core: 4
     java_bin: "java"
-    ref_path:   "/References/human_g1k_v37_decoy.fasta"
+    ref_path:   "references//human_g1k_v37_decoy.fasta"
     mode: "INDEL"
   command_line_options:
     java:
@@ -92,7 +93,7 @@ workflow_steps:
     gatk:
       - ""
     gatk_vr:
-      - "-resource:mills,known=true,training=true,truth=true,prior=12.0 /References/mills.vcf "
+      - "-resource:mills,known=true,training=true,truth=true,prior=12.0 references/mills.vcf "
       - "-an QD -an FS -an SOR -an ReadPosRankSum -an MQRankSum "
       - "-tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.5 -tranche 99.0 -tranche 97.0 -tranche 96.0 -tranche 95.0 -tranche 94.0 "
       - "-tranche 93.5 -tranche 93.0 -tranche 92.0 -tranche 91.0 -tranche 90.0 "
@@ -106,14 +107,14 @@ workflow_steps:
   depend_from: ["GATK_GenotypeGVCFs_merge"]
   result: "true"
   step_options:
-    input_dir: "12_Genotypes"
+    input_dir: "output/12_Genotypes"
     input_files: "*.vcf"
-    output_dir: "13_variants_SNPs"
+    output_dir: "output/13_variants_SNPs"
     output_suffix: "SNPs"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
     core: 4
     java_bin: "java"
-    ref_path:   "/References/human_g1k_v37_decoy.fasta"
+    ref_path:   "references//human_g1k_v37_decoy.fasta"
     mode: "SNP"
   command_line_options:
     java:
@@ -122,10 +123,10 @@ workflow_steps:
     gatk:
       - ""
     gatk_vr:
-      - "-resource:omni,known=false,training=true,truth=true,prior=12.0 /References/omni.vcf "
-      - "-resource:1000G,known=false,training=true,truth=false,prior=10.0 /References/1000g.vcf "
-      - "-resource:dbsnp,known=true,training=false,truth=false,prior=2.0 /References/dbsnp.vcf "
-      - "-resource:hapmap,known=false,training=true,truth=true,prior=15.0 /References/hapmap.vcf "
+      - "-resource:omni,known=false,training=true,truth=true,prior=12.0 references/omni.vcf "
+      - "-resource:1000G,known=false,training=true,truth=false,prior=10.0 references/1000g.vcf "
+      - "-resource:dbsnp,known=true,training=false,truth=false,prior=2.0 references/dbsnp.vcf "
+      - "-resource:hapmap,known=false,training=true,truth=true,prior=15.0 references/hapmap.vcf "
       - "-an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR "
       - "-tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.6 -tranche 99.5 -tranche 99.4 "
       - "-tranche 99.3 -tranche 99.0 -tranche 98.0 -tranche 97.0 -tranche 90.0"
