@@ -32,10 +32,11 @@ docker run -t --rm $CUST_USERID -v=$REFERENCE:/References -v=$DATA:/Data -w=/Dat
 
 ### Run the workflow
 
-As long as you run the startFromDocker.sh script from the "run" folder you should be ready to test the pipeline with the test data that is included in the "Samples" folder. Be adviced that the pipeline will crash on the final step in the germline_varcall.yaml workflow called "VariantRecalibration" due to too few read in the test fastq files (the variant quality recalibration steps will fail). As long as you have a complete set of fastq files the pipeline will finish successfully though.  
+As long as you run the RunDockerWorkflow-TSD.py script from the "run" folder you should be ready to test the pipeline with the test data that is included in the "Samples" folder. Be adviced that the pipeline will crash on the final step in the germline_varcall.yaml workflow called "VariantRecalibration" due to too few read in the test fastq files (the variant quality recalibration steps will fail). As long as you have a complete set of fastq files the pipeline will finish successfully though.  
 To start the pipeline, go to the terminal, change your working directory to the "run" directory and run 
 ```
-sudo sh startFromDocker.sh
+RunDockerWorkflow-TSD.py -d docker_image -i /absolute/path/to/inputs_dir/ -o /absolute/path/to/outputs_dir/ -r /absolute/path/to/references_dir/ -i /absolute/path/to/workflow_script.yaml 
+
 ```
 
 
