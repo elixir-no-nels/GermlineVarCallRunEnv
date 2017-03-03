@@ -2,8 +2,8 @@
 info:
   name: "Germline_variant_calling"
   desc: "Lars Birger Aasheim"
-  log_dir: "Logs"
-  steps_status_dir: "FinishedSteps"
+  log_dir: "output/Logs"
+  steps_status_dir: "output/FinishedSteps"
 
 
 workflow_steps:

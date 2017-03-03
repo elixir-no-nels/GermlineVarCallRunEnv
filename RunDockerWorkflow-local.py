@@ -14,30 +14,11 @@ parser.add_argument("-i", "--input_folder",     type=str, required=True, help="T
 parser.add_argument("-o", "--output_folder",    type=str, required=True, help="The absolute path of the output folder")
 parser.add_argument("-r", "--reference_folder", type=str, required=True, help="The absolute path of the references folder")
 parser.add_argument("-y", "--yaml_file",        type=str, required=True, help="The absolute path of yaml recepe file of the workflow to run")
+parser.add_argument("-d", "--docker_image",     type=str, required=True, help="The docker images to use")
 args = parser.parse_args()
 
 
 #--- Functions ---
-
-def get_project_path():
-  path = os.getenv("HOME")
-  path = os.path.normpath(path)
-  pathArray = path.split(os.sep)
-  return("/{0}/{1}/".format(pathArray[1],pathArray[2]))
-
-
-def get_path_from_project(path):
-  path = os.path.normpath(path)
-  pathArray = path.split(os.sep)
-  if "/{0}/{1}/".format(pathArray[1],pathArray[2]) == get_project_path():
-    del pathArray[0]
-    del pathArray[0]
-    del pathArray[0]
-    return "/".join(pathArray)
-  else:
-    print("path {0} need to be absolute and in your project area").format(path)
-    exit()
-
 
 def run_workflow(docker_command):
   process = subprocess.Popen(docker_command, close_fds=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -87,10 +68,10 @@ def get_gid():
 
 #--- Config ---
 
-container_id    = 'ghislain/workflow:latest'
+container_id    = args.docker_image
 
 user_id         = get_uid()
-group_id        = '2892' # p172-member-group
+group_id        = get_gid()
 custom_user_id  = "-u={0}:{1}".format(user_id,group_id)
 custom_env      = '-e HOME=/tmp' 
 
@@ -105,28 +86,25 @@ test_file(args.yaml_file)
 
 #--- parse pathes ---
 
-input_path     = get_path_from_project(args.input_folder)
-output_path    = get_path_from_project(args.output_folder)
-reference_path = get_path_from_project(args.reference_folder)
-yaml_path      = get_path_from_project(args.yaml_file)
+input_path     = args.input_folder
+output_path    = args.output_folder
+reference_path = args.reference_folder
+yaml_path      = args.yaml_file
 
 
 #--- Build the command running inside the container ---
 
 command         = "\
-ln -s /mnt/{0} /tmp/output && \
-ln -s /mnt/{1} /tmp/input && \
-ln -s /mnt/{2} /tmp/references && \
 cd /tmp/ && \
-rbFlow.rb -r -c /mnt/{3} \
-".format(output_path, input_path, reference_path, yaml_path)
+rbFlow.rb -r -c /tmp/workflow.yaml \
+"
 
 
 #--- Start the Container ---
 
 docker_command  = "\
-docker run -t --rm {0} {1} -v={2}:/mnt -w=/tmp {3} sh -c \"{4}\" \
-".format(custom_env, custom_user_id, get_project_path(), container_id, command)
+docker run -t --rm {0} {1} -v={2}:/tmp/output -v={3}:/tmp/input -v={4}:/tmp/references -v={5}:/tmp/workflow.yaml -w=/tmp {6} sh -c \"{7}\" \
+".format(custom_env, custom_user_id, output_path, input_path, reference_path, yaml_path, container_id, command)
 
 
 #--- Run ---
