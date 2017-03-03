@@ -6,8 +6,8 @@
 
 ### Setup and preparations
 
-The startFromDocker.sh script assumes that a certain folder structure is in place, and it is recommended that you use the same folder structure unless you want to edit the script manually to suit your own preferences.  
-The simplest way to get started is to clone this repository, change the file paths as described below, install Docker and then you're good to go!  
+The RunDockerWorkflow-TSD.py script help you to run the workflow in a Docker container with a minimal set of options.  
+The simplest way to get started is to clone this repository, install Docker, start a container with correct parameters and then you're good to go!  
 
 To install Docker you can follow the appropriate instructions on Dockers website for instructions: https://docs.docker.com/engine/installation/
 
@@ -22,26 +22,22 @@ Before we run the docker image, we need to configure the startFromDocker.sh scri
 
 Scroll down and change the file paths at "# Paths" to point to your reference files and the data folder (= the folder you checked out this repo to. Having data in a separate location to be tested and developed further next). 
 
-The startFromDocker.sh script has divided the pre processing and germline variant calling steps into two separate scripts called preprocessing.yaml and germline_varcall.yaml. These scripts are stored in variables called "SCRIPT1" and "SCRIPT2" respectively. The script will both be run one after the other: SCRIPT2 after SCRIPT1 has completed.
-
-If you would like to only run one of the scripts, you need to manually edit the startFromDocker.sh script and comment out either of these two lines: 
-```
-docker run -t --rm $CUST_USERID -v=$REFERENCE:/References -v=$DATA:/Data -w=/Data/ $IMAGE_ID sh -c "rbFlow.rb -c $SCRIPT1 -r"
-docker run -t --rm $CUST_USERID -v=$REFERENCE:/References -v=$DATA:/Data -w=/Data/ $IMAGE_ID sh -c "rbFlow.rb -c $SCRIPT2 -r" 
-```
+The workflow is divided in two parts, the pre processing and germline calling discibed in two separate scripts called preprocessing.yaml and germline_varcall.yaml.
 
 ### Run the workflow
 
 As long as you run the RunDockerWorkflow-TSD.py script from the "run" folder you should be ready to test the pipeline with the test data that is included in the "Samples" folder. Be adviced that the pipeline will crash on the final step in the germline_varcall.yaml workflow called "VariantRecalibration" due to too few read in the test fastq files (the variant quality recalibration steps will fail). As long as you have a complete set of fastq files the pipeline will finish successfully though.  
 To start the pipeline, go to the terminal, change your working directory to the "run" directory and run 
 ```
-RunDockerWorkflow-TSD.py -d docker_image -i /absolute/path/to/inputs_dir/ -o /absolute/path/to/outputs_dir/ -r /absolute/path/to/references_dir/ -i /absolute/path/to/workflow_script.yaml 
+RunDockerWorkflow-TSD.py -d docker_image -i /absolute/path/to/inputs_dir/ -o /absolute/path/to/outputs_dir/ -r /absolute/path/to/references_dir/ -y /absolute/path/to/workflow_script.yaml 
 
 ```
 
+To run the complete workflow you have to run the preprocessing step by providing  preprocessing.yaml to the -y option, and then the calling by providing the germline_varcall.yaml file.
+
 
 ### Cleaning the folder between runs  
-If you run the clean.sh script, you will delete everything that gets created during an analysis.  
+If you run the clean.sh script, you will delete everything that gets created during an analysis.
 
 
 

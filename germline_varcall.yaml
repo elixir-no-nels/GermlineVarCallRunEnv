@@ -25,7 +25,7 @@ workflow_steps:
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
     core: 8 # This is a risky setting due to a random crash risk. Use at your own risk. Values over 8 are often detrimental to performance.
     java_bin: "java"
-    ref_path:   "references//human_g1k_v37_decoy.fasta"
+    ref_path:   "references/human_g1k_v37_decoy.fasta"
   command_line_options:
     java:
       - "-Xmx15G"

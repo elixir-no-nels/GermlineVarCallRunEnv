@@ -30,8 +30,8 @@ def run_workflow(docker_command):
 
 def run_debug(command, docker_command):
   print("Command :")
-  print(command)
-  print("")
+  #print(command)
+  #print("")
   print("Docker Command :")
   print(docker_command)
   print("")
@@ -109,7 +109,7 @@ docker run -t --rm {0} {1} -v={2}:/tmp/output -v={3}:/tmp/input -v={4}:/tmp/refe
 
 #--- Run ---
 
-#run_debug(command, docker_command)
+run_debug(command, docker_command)
 run_workflow(docker_command)
 
 
