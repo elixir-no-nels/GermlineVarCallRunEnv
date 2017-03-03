@@ -53,7 +53,7 @@ If you run the clean.sh script, you will delete everything that gets created dur
 ### How to run the workflow
 
 ```
-sudo RunDockerWorkflow-TSD.py -i /absolute/path/to/inputs_dir/ -o /absolute/path/to/outputs_dir/ -r /absolute/path/to/references_dir/ -i /absolute/path/to/workflow_script.yaml
+sudo RunDockerWorkflow-TSD.py -i /absolute/path/to/inputs_dir/ -o /absolute/path/to/outputs_dir/ -r /absolute/path/to/references_dir/ -y /absolute/path/to/workflow_script.yaml
 ```
 
 All directories and files have to be in your project area.

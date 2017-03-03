@@ -35,7 +35,7 @@ workflow_steps:
     gatk_HaplotypeCaller:
       - "--emitRefConfidence GVCF "
       - "--variant_index_type LINEAR "
-      - "--variant_index_parameter 128000"
+      - "--variant_index_parameter 128000 "
       - "-XL hs37d5"
 
 
@@ -93,7 +93,7 @@ workflow_steps:
     gatk:
       - ""
     gatk_vr:
-      - "-resource:mills,known=true,training=true,truth=true,prior=12.0 references/mills.vcf "
+      - "-resource:mills,known=true,training=true,truth=true,prior=12.0 references/Mills_and_1000G_gold_standard.indels.b37.vcf "
       - "-an QD -an FS -an SOR -an ReadPosRankSum -an MQRankSum "
       - "-tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.5 -tranche 99.0 -tranche 97.0 -tranche 96.0 -tranche 95.0 -tranche 94.0 "
       - "-tranche 93.5 -tranche 93.0 -tranche 92.0 -tranche 91.0 -tranche 90.0 "
