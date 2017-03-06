@@ -54,9 +54,9 @@ def test_file(path):
 
 
 def get_uid():
-  process = subprocess.Popen('id -u'.split(), stdout=subprocess.PIPE)
-  output, error = process.communicate()
-  return output.strip()
+  # return the original user id even after sudo, in python
+  user = os.environ['SUDO_USER'] if 'SUDO_USER' in os.environ else os.environ['USER'] 
+  return(user)
 
 
 def get_gid():
