@@ -39,7 +39,7 @@ def run_debug(command, docker_command):
 
 def test_path(path):
   if os.path.isdir(path):
-    return True
+    return(True)
   else:
     print("Path {0} not found".format(path))
     exit()
@@ -47,9 +47,17 @@ def test_path(path):
 
 def test_file(path):
   if os.path.isfile(path):
-    return True
+    return(True)
   else:
     print("Path {0} not found".format(path))
+    exit()
+
+
+def is_absolute(path):
+  if os.path.isabs(path):
+    return(True)
+  else:
+    print("Path {0} is not absolute".format(path))
     exit()
 
 
@@ -65,6 +73,26 @@ def get_gid():
   return output.strip()
 
 
+#--- parse pathes ---
+
+input_path     = args.input_folder
+output_path    = args.output_folder
+reference_path = args.reference_folder
+yaml_path      = args.yaml_file
+
+
+#--- Test if path are valid ---
+
+is_absolute(input_path)
+is_absolute(output_path)
+is_absolute(reference_path)
+is_absolute(yaml_path)
+test_path(input_path)
+test_path(output_path)
+test_path(reference_path)
+test_file(yaml_path)
+
+
 
 #--- Config ---
 
@@ -74,22 +102,6 @@ user_id         = get_uid()
 group_id        = get_gid()
 custom_user_id  = "-u={0}:{1}".format(user_id,group_id)
 custom_env      = '-e HOME=/tmp' 
-
-
-#--- Test if path are valid ---
-
-test_path(args.input_folder)
-test_path(args.output_folder)
-test_path(args.reference_folder)
-test_file(args.yaml_file)
-
-
-#--- parse pathes ---
-
-input_path     = args.input_folder
-output_path    = args.output_folder
-reference_path = args.reference_folder
-yaml_path      = args.yaml_file
 
 
 #--- Build the command running inside the container ---
