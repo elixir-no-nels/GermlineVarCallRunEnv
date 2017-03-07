@@ -99,7 +99,7 @@ def build_docker_command(input_d, output_d, reference_d, yaml_f, cust_env, user_
   ln -s /mnt/{2} /tmp/references && \
   cd /tmp/ && \
   rbFlow.rb -r -c /mnt/{3} \
-  ".format(input_d, output_d, reference_d, yaml_f)
+  ".format(output_d, input_d, reference_d, yaml_f)
   #--- Start the Container ---
   docker_command  = "\
   docker run -t --rm {0} {1} -v={2}:/mnt -w=/tmp {3} sh -c \"{4}\" \
@@ -118,13 +118,13 @@ custom_env        = '-e HOME=/tmp'
 
 input_path        = get_path_from_project(args.input_folder)
 output_path       = get_path_from_project(args.output_folder)
+reference_folder  = get_path_from_project('/tsd/p172/home/p172-ghislain/Work/References-Germline')
+prepros_yaml_file = get_path_from_project('/tsd/p172/home/p172-ghislain/Work/rbFlow-Germline-Test/preprocessing.yaml')
+calling_yaml_file = get_path_from_project('/tsd/p172/home/p172-ghislain/Work/rbFlow-Germline-Test/germline_varcall.yaml')
+
 preprocessing_wf  = args.preprocessing
 variantcalling_wf = args.variantcalling
 project_path      = get_project_path()
-reference_folder  = '/tsd/p172/home/p172-ghislain/Work/'
-prepros_yaml_file = '/tsd/p172/home/p172-ghislain/Work/preprocessing.yaml'
-calling_yaml_file = '/tsd/p172/home/p172-ghislain/References_Germline'
-
 
 
 #--- Test if path are valid ---
@@ -133,15 +133,12 @@ is_absolute(args.input_folder)
 is_absolute(args.output_folder)
 test_path(args.input_folder)
 test_path(args.output_folder)
-test_path(reference_folder)
-test_file(prepros_yaml_file)
-test_file(calling_yaml_file)
 
 
 # Docker command
 
-docker_prepros = build_docker_command(input_path, output_path, reference_folder, prepros_yaml_file, custom_env, user_id, project_path, container_id)
-docker_varcall = build_docker_command(input_path, output_path, reference_folder, calling_yaml_file, custom_env, user_id, project_path, container_id)
+docker_prepros = build_docker_command(input_path, output_path, reference_folder, prepros_yaml_file, custom_env, custom_user_id, project_path, container_id)
+docker_varcall = build_docker_command(input_path, output_path, reference_folder, calling_yaml_file, custom_env, custom_user_id, project_path, container_id)
 
 #--- Run ---
 
@@ -150,10 +147,10 @@ if (preprocessing_wf == False) and (variantcalling_wf == False) :
 
 if preprocessing_wf :
   run_debug(docker_prepros)
-  #run_workflow(docker_prepros)
+  run_workflow(docker_prepros)
 
 if variantcalling_wf :
   run_debug(docker_varcall)
-  #run_workflow(docker_varcall)
+  run_workflow(docker_varcall)
 
 
