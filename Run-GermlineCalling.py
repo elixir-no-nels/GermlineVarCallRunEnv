@@ -1,6 +1,7 @@
 #! /bin/env python
 
 import os
+import pwd
 import sys
 import argparse
 import subprocess
@@ -14,8 +15,6 @@ parser.add_argument("-i", "--input_folder",     type=str, required=True, help="T
 parser.add_argument("-o", "--output_folder",    type=str, required=True, help="The absolute path of the output folder")
 parser.add_argument("-p", "--preprocessing",    action='store_true', required=False, default=False, help="Run the preprocessing   part of the workflow")
 parser.add_argument("-v", "--variantcalling",   action='store_true', required=False, default=False, help="Run the variant calling part of the workflow")
-
-
 args = parser.parse_args()
 
 
@@ -80,9 +79,10 @@ def is_absolute(path):
 
 
 def get_uid():
-  process = subprocess.Popen('id -u'.split(), stdout=subprocess.PIPE)
-  output, error = process.communicate()
-  return output.strip()
+  # return the original user id even after sudo, in python
+  user = os.environ['SUDO_USER'] if 'SUDO_USER' in os.environ else os.environ['USER']
+  user_id  = pwd.getpwnam(user).pw_uid
+  return(user_id)
 
 
 def get_gid():

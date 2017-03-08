@@ -1,6 +1,7 @@
 #! /bin/env python
 
 import os
+import pwd
 import sys
 import argparse
 import subprocess
@@ -29,7 +30,7 @@ def run_workflow(docker_command):
 
 
 def run_debug(command, docker_command):
-  print("Command :")
+  #print("Command :")
   #print(command)
   #print("")
   print("Docker Command :")
@@ -63,8 +64,9 @@ def is_absolute(path):
 
 def get_uid():
   # return the original user id even after sudo, in python
-  user = os.environ['SUDO_USER'] if 'SUDO_USER' in os.environ else os.environ['USER'] 
-  return(user)
+  user = os.environ['SUDO_USER'] if 'SUDO_USER' in os.environ else os.environ['USER']
+  user_id  = pwd.getpwnam(user).pw_uid
+  return(user_id)
 
 
 def get_gid():
