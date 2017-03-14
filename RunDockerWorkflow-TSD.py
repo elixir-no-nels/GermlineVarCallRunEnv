@@ -11,10 +11,10 @@ import subprocess
 #--- Args ---
 
 parser = argparse.ArgumentParser(description="Docker Workflow wrapper")
-parser.add_argument("-i", "--input_folder",     type=str, required=True, help="The absolute path of the input  folder")
-parser.add_argument("-o", "--output_folder",    type=str, required=True, help="The absolute path of the output folder")
-parser.add_argument("-r", "--reference_folder", type=str, required=True, help="The absolute path of the references folder")
-parser.add_argument("-y", "--yaml_file",        type=str, required=True, help="The absolute path of yaml recepe file of the workflow to run")
+parser.add_argument("-i", "--input_folder",     type=str, required=True, help="Path of the input  folder")
+parser.add_argument("-o", "--output_folder",    type=str, required=True, help="Path of the output folder")
+parser.add_argument("-r", "--reference_folder", type=str, required=True, help="Path of the references folder")
+parser.add_argument("-y", "--yaml_file",        type=str, required=True, help="Path of yaml recepe file of the workflow to run")
 args = parser.parse_args()
 
 
@@ -44,7 +44,7 @@ def run_workflow(docker_command):
   process = subprocess.Popen(docker_command, close_fds=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   while process.poll() is None:
     out = process.stdout.read(1)
-    sys.stdout.write(out)
+    sys.stdout.write(out.decode('utf-8'))
     sys.stdout.flush()
 
 
@@ -101,13 +101,15 @@ output_path    = get_path_from_project(args.output_folder)
 reference_path = get_path_from_project(args.reference_folder)
 yaml_path      = get_path_from_project(args.yaml_file)
 
+#--- convert path to absolute ---
+
+input_path     = os.path.abspath(input_path)
+output_path    = os.path.abspath(output_path)
+reference_path = os.path.abspath(reference_path)
+yaml_path      = os.path.abspath(yaml_path)
 
 #--- Test if path are valid ---
 
-is_absolute(input_path)
-is_absolute(output_path)
-is_absolute(reference_path)
-is_absolute(yaml_path)
 test_path(input_path)
 test_path(output_path)
 test_path(reference_path)
@@ -121,7 +123,7 @@ container_id    = 'kjellptrsn/germlinevarcalldocker:latest'
 user_id         = get_uid()
 group_id        = '2892' # p172-member-group
 custom_user_id  = "-u={0}:{1}".format(user_id,group_id)
-custom_env      = '-e HOME=/tmp' 
+custom_env      = '-e HOME=/tmp'
 
 
 #--- Build the command running inside the container ---
@@ -146,6 +148,3 @@ docker run -t --rm {0} {1} -v={2}:/mnt -w=/tmp {3} sh -c \"{4}\" \
 
 run_debug(command, docker_command)
 run_workflow(docker_command)
-
-
-
