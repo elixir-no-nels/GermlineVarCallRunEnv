@@ -158,3 +158,4 @@ if preprocessing_wf :
 if variantcalling_wf :
   #run_debug(docker_varcall)
   run_workflow(docker_varcall)
+
