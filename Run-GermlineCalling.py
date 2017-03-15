@@ -119,9 +119,9 @@ custom_env        = '-e HOME=/tmp'
 input_path        = get_path_from_project(args.input_folder)
 output_path       = get_path_from_project(args.output_folder)
 
-reference_folder  = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing-tsdfx/Germline-varcall-wf-reference-files-v2.8')
-prepros_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing-tsdfx/GermlineVarCallRunEnv/preprocessing.yaml')
-calling_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing-tsdfx/GermlineVarCallRunEnv/germline_varcall.yaml')
+reference_folder  = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/Germline-varcall-wf-reference-files-v2.8')
+prepros_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/preprocessing.yaml')
+calling_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/germline_varcall.yaml')
 
 preprocessing_wf  = args.preprocessing
 variantcalling_wf = args.variantcalling

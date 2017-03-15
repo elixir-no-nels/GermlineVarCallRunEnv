@@ -21,7 +21,7 @@ The reference files are stored in the NeLS portal. You need to have been granted
 Once you have your ssh private key file you can use the code below as a template, edit it and put in your NeLS username that you got in the tutorial. The NeLS file path should be the same as the one in the code below, and edit the destination file path by changing "/your/local/destination" to your actual folder where the reference files will be located.  
 
 ```
-scp -r -i yourNeLSusername@nelstor0.cbu.uib.no.txt yourNeLSusername@nelstor0.cbu.uib.no:Projects/NCS-PM_Elixir_collaboration/Germline-varcall-wf-reference-files-v2.8/ /your/local/destination/
+scp -r -i /path/to/your/keyfile/yourNeLSusername@nelstor0.cbu.uib.no.txt yourNeLSusername@nelstor0.cbu.uib.no:Projects/NCS-PM_Elixir_collaboration/Germline-varcall-wf-reference-files-v2.8/ /your/local/destination/
 ```
 Or do it manually by logging in to the NeLS website and navigating to the _NCS_PM_Elixir_collaboration_ folder and download the reference files as a zip file.  
 
@@ -63,14 +63,12 @@ You need to have been granted access to the kjellptrsn/germlinevarcalldocker doc
 
 3. Import the tar file through the File Lock to the right TSD project internal disk. 
 
-4. In the docker vm inside your tsd project (i.e. p172-docker-l), import the image from the tar file.
-
-***Ghislain, could you fill out the rest about how to tar the image and upload it to a TSD project VM?***  
+4. In the docker vm inside your tsd project (i.e. p172-docker-l), import the image from the tar file.  
 
 ### Instructions for downloading the reference files for this pipeline
 
 
-***This step to be completed by Elixir-No staff ***
+***This step will be completed by Elixir-No staff***
 
 The reference files are stored in the NeLS portal. You need to have been granted access to the _NCS_PM_Elixir_collaboration_ project folder to be able to download the reference files. If you have never used scp to download files from NeLS, watch [this tutorial](https://www.youtube.com/watch?v=TbUl8iuIwIw) for a guided walkthrough on how to download files from NeLS.  
 Once you have your ssh private key file you can use the code below as a template, edit it and put in your NeLS username that you got in the tutorial. The NeLS file path should be the same as the one in the code below, and edit the destination file path by changing "/your/local/destination" to your actual folder where the reference files will be located.
@@ -88,22 +86,23 @@ For p172 the local reference location used is currently:
 ***This has already been done***
 
 
-This location of the reference files is critical and have to be updated/checked in the script configuration in the next step.
+This location of the reference files is critical and has to be updated/checked in the script configuration in the next step.
   
 
 
 ### Deployment of Workflow definitions and scripts 
 
-*** This step to be prepared by Elixir-No staff, and completed by TSD staff(marked separately) ***
+***This step will be prepared by Elixir-No staff, and completed by TSD staff (marked separately)***
  
 1. Clone this repository to your local machine and then upload it to the TSD project with e.g sftp. Place the imported folder in a specific location, in p172 we use:
 ```
 /tsd/p172/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv
 ```
 
-2. Next , we need to configure the Run-GermlineCalling.py script.  
-Open the Run-GermlineCalling.py script with a text editor, scroll down and change the file paths at ```"#--- Config ---"```  
-to point to your reference files and preprocessing.yaml and germline_varcall.yaml files. This is the current locations to be used in p172:
+2. Next, we need to configure the Run-GermlineCalling.py script.  
+Open the Run-GermlineCalling.py script with a text editor, scroll down and change the file paths at  
+```"#--- Config ---"```  
+to point to your reference files and preprocessing.yaml and germline_varcall.yaml files. This is the current locations to be used in p172:  
 ```
 #--- Config ---
 reference_folder  = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/Germline-varcall-wf-reference-files-v2.8')
@@ -111,8 +110,8 @@ prepros_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workfl
 calling_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/germline_varcall.yaml')
 ``` 
 ***Elixir will edit the Run-GermlineCalling.py file in this location***  
-3. ***TSD*** (Abdulrahman) then need to make a copy of this script executable in the /usr/bin directory (without .py extension) and perform a test run to verify that it works properly.***
-4. ***TSD: ***The /usr/bin/Run-GermlineCalling needs to allowed run using sudo by all TSD-project members. This configuration is only needed at the very first deploy.
+3. ***TSD*** (Abdulrahman) then needs to make a copy of this script executable in the /usr/bin directory (without .py extension) and perform a test run to verify that it works properly.***
+4. ***TSD:***The /usr/bin/Run-GermlineCalling needs to be allowed to run using sudo by all TSD-project members. This configuration is only needed at the very first deploy.
 
 
 ### How to run the workflow  
