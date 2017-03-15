@@ -1,7 +1,6 @@
 #! /bin/env python
 
 import os
-import pwd
 import sys
 import argparse
 import subprocess
@@ -15,6 +14,8 @@ parser.add_argument("-i", "--input_folder",     type=str, required=True, help="T
 parser.add_argument("-o", "--output_folder",    type=str, required=True, help="The absolute path of the output folder")
 parser.add_argument("-p", "--preprocessing",    action='store_true', required=False, default=False, help="Run the preprocessing   part of the workflow")
 parser.add_argument("-v", "--variantcalling",   action='store_true', required=False, default=False, help="Run the variant calling part of the workflow")
+
+
 args = parser.parse_args()
 
 
@@ -79,10 +80,9 @@ def is_absolute(path):
 
 
 def get_uid():
-  # return the original user id even after sudo, in python
-  user = os.environ['SUDO_USER'] if 'SUDO_USER' in os.environ else os.environ['USER']
-  user_id  = pwd.getpwnam(user).pw_uid
-  return(user_id)
+  process = subprocess.Popen('id -u'.split(), stdout=subprocess.PIPE)
+  output, error = process.communicate()
+  return output.strip()
 
 
 def get_gid():
@@ -119,9 +119,9 @@ custom_env        = '-e HOME=/tmp'
 input_path        = get_path_from_project(args.input_folder)
 output_path       = get_path_from_project(args.output_folder)
 
-reference_folder  = get_path_from_project('/tsd/p172/home/p172-ghislain/Work/References-Germline')
-prepros_yaml_file = get_path_from_project('/tsd/p172/home/p172-ghislain/Work/rbFlow-Germline-Test/preprocessing.yaml')
-calling_yaml_file = get_path_from_project('/tsd/p172/home/p172-ghislain/Work/rbFlow-Germline-Test/germline_varcall.yaml')
+reference_folder  = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing-tsdfx/Germline-varcall-wf-reference-files-v2.8')
+prepros_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing-tsdfx/GermlineVarCallRunEnv/preprocessing.yaml')
+calling_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing-tsdfx/GermlineVarCallRunEnv/germline_varcall.yaml')
 
 preprocessing_wf  = args.preprocessing
 variantcalling_wf = args.variantcalling
@@ -147,7 +147,7 @@ docker_varcall = build_docker_command(input_path, output_path, reference_folder,
 #--- Run ---
 
 if (preprocessing_wf == False) and (variantcalling_wf == False) :
-  print('Preprocessing or Variant calling need to be selected\n  Use -p option for Preprocessing\n  Use -v option for variant calling')
+  print('Preprocessing or Variant calling needs to be selected\n  Use -p option for Preprocessing\n  Use -v option for variant calling\n  Use -p -v to run both of them')
 
 if preprocessing_wf :
   run_debug(docker_prepros)
