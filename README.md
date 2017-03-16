@@ -110,8 +110,8 @@ prepros_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workfl
 calling_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/germline_varcall.yaml')
 ``` 
 ***Elixir will edit the Run-GermlineCalling.py file in this location***  
-3. ***TSD*** (Abdulrahman) then needs to make a copy of this script executable in the /usr/bin directory (without .py extension) and perform a test run to verify that it works properly.***
-4. ***TSD:***The /usr/bin/Run-GermlineCalling needs to be allowed to run using sudo by all TSD-project members. This configuration is only needed at the very first deploy.
+3. ***TSD*** (Abdulrahman) then needs to make a copy of this script executable in the /usr/bin directory (without .py extension) and perform a test run to verify that it works properly.  
+4. ***TSD***: The /usr/bin/Run-GermlineCalling needs to be allowed to run using sudo by all TSD-project members. This configuration is only needed at the very first deploy.
 
 
 ### How to run the workflow  
