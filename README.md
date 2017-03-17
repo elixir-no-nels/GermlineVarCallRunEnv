@@ -37,7 +37,7 @@ to point to your reference files and the preprocessing.yaml and germline_varcall
 You should be ready to test the pipeline with the test data that is included in the "Samples" folder now. Remember that when using the provided test data the pipeline will crash on the final step in the germline_varcall.yaml workflow called "VariantRecalibration" due to too few reads in the test fastq files (the variant quality recalibration steps will fail). As long as you have a complete set of fastq files the pipeline will finish successfully though.  
 You have three options when you run the pipeline. You can 1) run the preprocessing by using the "-p" flag, or 2) run germline variant calling by using the "-v" flag, or 3) run both of them by using both "-p -v". The example below would run the pipeline from start to finish since it is using "-p -v".
 ```
-python Run-GermlineCalling.py -i /absolute/path/to/inputs_dir/ -o /absolute/path/to/outputs_dir/ -p -v
+python Run-GermlineCalling.py -i path/to/inputs_dir/ -o path/to/outputs_dir/ -p -v
 
 ```
 
@@ -118,7 +118,7 @@ calling_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workfl
 You should be ready to test the pipeline with the test data that is included in the "Samples" folder now. Remember that when using the provided test data the pipeline will crash on the final step in the germline_varcall.yaml workflow called "VariantRecalibration" due to too few reads in the test fastq files (the variant quality recalibration steps will fail). As long as you have a complete set of fastq files the pipeline will finish successfully though.  
 You have three options when you run the pipeline. You can 1) run the preprocessing by using the "-p" flag, or 2) run germline variant calling by using the "-v" flag, or 3) run both of them by using both "-p -v". The example below would run the pipeline from the first to the last tool since it is using "-p -v".  
 ```
-sudo Run-GermlineCalling -p -v -i /absolute/path/to/inputs_dir/ -o /absolute/path/to/outputs_dir/ 
+sudo Run-GermlineCalling -p -v -i path/to/inputs_dir/ -o path/to/outputs_dir/ 
 ```
 
 All directories and files have to be in your project area.  
