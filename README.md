@@ -10,10 +10,19 @@ The Run-GermlineCalling.py script helps you to run the workflow in a Docker cont
 
 To install Docker you can follow the instructions on the Docker website: https://docs.docker.com/engine/installation/
 
+
+Because the images is stored on a private repository you need to login ot the docker hub registrery.
+```
+sudo docker login https://hub.docker.com -u [username]
+Password:[the password]
+Login Succeeded
+```
+
 To install the latest rbFlow based Docker image, run 
 ```
 sudo docker pull kjellptrsn/germlinevarcalldocker
 ```
+
 You need to have been granted access to the kjellptrsn docker repository to be able to download the image. These instructions also assume you are running docker through sudo, but if you are a member of the docker group on your system, your setup may allow you to skip the sudo command.
 
 ### Instructions for downloading the reference files for this pipeline
