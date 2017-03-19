@@ -39,6 +39,7 @@ Or do it manually by logging in to the NeLS website and navigating to the _NCS_P
 ### How to run the workflow
 
 You should be ready to test the pipeline with the test data that is included in the "Samples" folder now. Remember that when using the provided test data the pipeline will crash on the final step in the germline_varcall.yaml workflow called "VariantRecalibration" due to too few reads in the test fastq files (the variant quality recalibration steps will fail). As long as you have a complete set of fastq files the pipeline will finish successfully though.
+This script take as parameters the input directory with samples, the output directory, the directory containing references, the yaml file descibing the workflow and the docker image id. In the log information displayed by this script you will find the shell command line used to start the workflow container.
 
 ```
 # Pre-processing of samples
