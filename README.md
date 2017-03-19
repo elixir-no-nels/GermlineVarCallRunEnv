@@ -34,19 +34,18 @@ scp -r -i /path/to/your/keyfile/yourNeLSusername@nelstor0.cbu.uib.no.txt yourNeL
 ```
 Or do it manually by logging in to the NeLS website and navigating to the _NCS_PM_Elixir_collaboration_ folder and download the reference files as a zip file.  
 
-### How to configure the Run-GermlineCalling.py script
-Before we run the docker image, we need to configure the Run-GermlineCalling.py script.  
+### How to configure the RunDockerWorkflow-local.py script
 
-Open the Run-GermlineCalling.py script with a text editor and scroll down and change the file paths at 
-
-```"#--- Config ---"```  
-to point to your reference files and the preprocessing.yaml and germline_varcall.yaml files.  
 ### How to run the workflow
 
-You should be ready to test the pipeline with the test data that is included in the "Samples" folder now. Remember that when using the provided test data the pipeline will crash on the final step in the germline_varcall.yaml workflow called "VariantRecalibration" due to too few reads in the test fastq files (the variant quality recalibration steps will fail). As long as you have a complete set of fastq files the pipeline will finish successfully though.  
-You have three options when you run the pipeline. You can 1) run the preprocessing by using the "-p" flag, or 2) run germline variant calling by using the "-v" flag, or 3) run both of them by using both "-p -v". The example below would run the pipeline from start to finish since it is using "-p -v".
+You should be ready to test the pipeline with the test data that is included in the "Samples" folder now. Remember that when using the provided test data the pipeline will crash on the final step in the germline_varcall.yaml workflow called "VariantRecalibration" due to too few reads in the test fastq files (the variant quality recalibration steps will fail). As long as you have a complete set of fastq files the pipeline will finish successfully though.
+
 ```
-python Run-GermlineCalling.py -i path/to/inputs_dir/ -o path/to/outputs_dir/ -p -v
+# Pre-processing of samples
+python RunDockerWorkflow-local.py -i path/input_folder -o path/output_folder -r path/reference_folder -y path/preprocessing.yaml -d kjellptrsn/germlinevarcalldocker
+
+# variant calling
+python RunDockerWorkflow-local.py -i path/input_folder -o path/output_folder -r path/reference_folder -y path/germline_varcall.yaml -d kjellptrsn/germlinevarcalldocker
 
 ```
 
