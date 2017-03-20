@@ -10,8 +10,8 @@ import subprocess
 #--- Args ---
 
 parser = argparse.ArgumentParser(description="Docker Workflow wrapper")
-parser.add_argument("-i", "--input_folder",     type=str, required=True, help="The absolute path of the input  folder")
-parser.add_argument("-o", "--output_folder",    type=str, required=True, help="The absolute path of the output folder")
+parser.add_argument("-i", "--input_folder",     type=str, required=True, help="Path of the input  folder")
+parser.add_argument("-o", "--output_folder",    type=str, required=True, help="Path of the output folder")
 parser.add_argument("-p", "--preprocessing",    action='store_true', required=False, default=False, help="Run the preprocessing   part of the workflow")
 parser.add_argument("-v", "--variantcalling",   action='store_true', required=False, default=False, help="Run the variant calling part of the workflow")
 
@@ -45,7 +45,7 @@ def run_workflow(docker_command):
   process = subprocess.Popen(docker_command, close_fds=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   while process.poll() is None:
     out = process.stdout.read(1)
-    sys.stdout.write(out)
+    sys.stdout.write(out.decode('utf-8'))
     sys.stdout.flush()
 
 
@@ -119,9 +119,9 @@ custom_env        = '-e HOME=/tmp'
 input_path        = get_path_from_project(args.input_folder)
 output_path       = get_path_from_project(args.output_folder)
 
-reference_folder  = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing-tsdfx/Germline-varcall-wf-reference-files-v2.8')
-prepros_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing-tsdfx/GermlineVarCallRunEnv/preprocessing.yaml')
-calling_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing-tsdfx/GermlineVarCallRunEnv/germline_varcall.yaml')
+reference_folder  = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/Germline-varcall-wf-reference-files-v2.8')
+prepros_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/preprocessing.yaml')
+calling_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/germline_varcall.yaml')
 
 preprocessing_wf  = args.preprocessing
 variantcalling_wf = args.variantcalling
@@ -131,8 +131,10 @@ project_path      = get_project_path()
 
 #--- Test if path are valid ---
 
-is_absolute(args.input_folder)
-is_absolute(args.output_folder)
+#--- convert path to absolute ---
+
+input_path     = os.path.abspath(input_path)
+output_path    = os.path.abspath(output_path)
 test_path(args.input_folder)
 test_path(args.output_folder)
 
@@ -150,12 +152,9 @@ if (preprocessing_wf == False) and (variantcalling_wf == False) :
   print('Preprocessing or Variant calling needs to be selected\n  Use -p option for Preprocessing\n  Use -v option for variant calling\n  Use -p -v to run both of them')
 
 if preprocessing_wf :
-  run_debug(docker_prepros)
+  #run_debug(docker_prepros)
   run_workflow(docker_prepros)
 
 if variantcalling_wf :
-  run_debug(docker_varcall)
+  #run_debug(docker_varcall)
   run_workflow(docker_varcall)
-
-
-

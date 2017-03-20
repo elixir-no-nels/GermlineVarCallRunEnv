@@ -1,6 +1,7 @@
 #! /bin/env python
 
 import os
+import pwd
 import sys
 import argparse
 import subprocess
@@ -10,10 +11,10 @@ import subprocess
 #--- Args ---
 
 parser = argparse.ArgumentParser(description="Docker Workflow wrapper")
-parser.add_argument("-i", "--input_folder",     type=str, required=True, help="The absolute path of the input  folder")
-parser.add_argument("-o", "--output_folder",    type=str, required=True, help="The absolute path of the output folder")
-parser.add_argument("-r", "--reference_folder", type=str, required=True, help="The absolute path of the references folder")
-parser.add_argument("-y", "--yaml_file",        type=str, required=True, help="The absolute path of yaml recepe file of the workflow to run")
+parser.add_argument("-i", "--input_folder",     type=str, required=True, help="Path of the input  folder")
+parser.add_argument("-o", "--output_folder",    type=str, required=True, help="Path of the output folder")
+parser.add_argument("-r", "--reference_folder", type=str, required=True, help="Path of the references folder")
+parser.add_argument("-y", "--yaml_file",        type=str, required=True, help="Path of yaml recepe file of the workflow to run")
 parser.add_argument("-d", "--docker_image",     type=str, required=True, help="The docker images to use")
 args = parser.parse_args()
 
@@ -24,12 +25,12 @@ def run_workflow(docker_command):
   process = subprocess.Popen(docker_command, close_fds=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   while process.poll() is None:
     out = process.stdout.read(1)
-    sys.stdout.write(out)
+    sys.stdout.write(out.decode('utf-8'))
     sys.stdout.flush()
 
 
 def run_debug(command, docker_command):
-  print("Command :")
+  #print("Command :")
   #print(command)
   #print("")
   print("Docker Command :")
@@ -63,14 +64,16 @@ def is_absolute(path):
 
 def get_uid():
   # return the original user id even after sudo, in python
-  user = os.environ['SUDO_USER'] if 'SUDO_USER' in os.environ else os.environ['USER'] 
-  return(user)
+  user = os.environ['SUDO_USER'] if 'SUDO_USER' in os.environ else os.environ['USER']
+  user_id  = pwd.getpwnam(user).pw_uid
+  return(user_id)
 
 
 def get_gid():
-  process = subprocess.Popen('id -g'.split(), stdout=subprocess.PIPE)
-  output, error = process.communicate()
-  return output.strip()
+  # return the original user id even after sudo, in python
+  user = os.environ['SUDO_USER'] if 'SUDO_USER' in os.environ else os.environ['USER']
+  group_id  = pwd.getpwnam(user).pw_gid
+  return(group_id)
 
 
 #--- parse pathes ---
@@ -80,13 +83,15 @@ output_path    = args.output_folder
 reference_path = args.reference_folder
 yaml_path      = args.yaml_file
 
+#--- convert path to absolute ---
+
+input_path     = os.path.abspath(input_path)
+output_path    = os.path.abspath(output_path)
+reference_path = os.path.abspath(reference_path)
+yaml_path      = os.path.abspath(yaml_path)
 
 #--- Test if path are valid ---
 
-is_absolute(input_path)
-is_absolute(output_path)
-is_absolute(reference_path)
-is_absolute(yaml_path)
 test_path(input_path)
 test_path(output_path)
 test_path(reference_path)
@@ -101,7 +106,7 @@ container_id    = args.docker_image
 user_id         = get_uid()
 group_id        = get_gid()
 custom_user_id  = "-u={0}:{1}".format(user_id,group_id)
-custom_env      = '-e HOME=/tmp' 
+custom_env      = '-e HOME=/tmp'
 
 
 #--- Build the command running inside the container ---
@@ -123,6 +128,3 @@ docker run -t --rm {0} {1} -v={2}:/tmp/output -v={3}:/tmp/input -v={4}:/tmp/refe
 
 run_debug(command, docker_command)
 run_workflow(docker_command)
-
-
-
