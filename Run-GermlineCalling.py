@@ -25,10 +25,10 @@ def get_project_path():
   path = "/tsd/p172ncspmdata/"
   return path
 
-  path = os.getenv("HOME")
-  path = os.path.normpath(path)
-  pathArray = path.split(os.sep)
-  return("/{0}/{1}/".format(pathArray[1],pathArray[2]))
+#  path = os.getenv("HOME")
+#  path = os.path.normpath(path)
+#  pathArray = path.split(os.sep)
+#  return("/{0}/{1}/".format(pathArray[1],pathArray[2]))
 
 
 def get_path_from_project(path):
