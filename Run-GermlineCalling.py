@@ -22,6 +22,9 @@ args = parser.parse_args()
 #--- Functions ---
 
 def get_project_path():
+  path = "/tsd/p172ncspmdata/"
+  return path
+
   path = os.getenv("HOME")
   path = os.path.normpath(path)
   pathArray = path.split(os.sep)
@@ -96,13 +99,13 @@ def build_docker_command(input_d, output_d, reference_d, yaml_f, cust_env, user_
   command         = "\
   ln -s /mnt/{0} /tmp/output && \
   ln -s /mnt/{1} /tmp/input && \
-  ln -s /mnt/{2} /tmp/references && \
+  ln -s /mnt2/{2} /tmp/references && \
   cd /tmp/ && \
-  rbFlow.rb -r -c /mnt/{3} \
+  rbFlow.rb -r -c /mnt2/{3} \
   ".format(output_d, input_d, reference_d, yaml_f)
   #--- Start the Container ---
   docker_command  = "\
-  docker run -t --rm {0} {1} -v={2}:/mnt -w=/tmp {3} sh -c \"{4}\" \
+  docker run -t --rm {0} {1} -v={2}:/mnt -v=/tsd/p172:/mnt2 -w=/tmp {3} sh -c \"{4}\" \
   ".format(cust_env, user_id, project_d, container_id, command)
   return(docker_command)
 
@@ -119,9 +122,9 @@ custom_env        = '-e HOME=/tmp'
 input_path        = get_path_from_project(args.input_folder)
 output_path       = get_path_from_project(args.output_folder)
 
-reference_folder  = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/Germline-varcall-wf-reference-files-v2.8')
-prepros_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/preprocessing.yaml')
-calling_yaml_file = get_path_from_project('/tsd/p172/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/germline_varcall.yaml')
+reference_folder  = '/data/durable/varcall-workflow-testing/Germline-varcall-wf-reference-files-v2.8'
+prepros_yaml_file = '/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/preprocessing.yaml'
+calling_yaml_file = '/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/germline_varcall.yaml'
 
 preprocessing_wf  = args.preprocessing
 variantcalling_wf = args.variantcalling
@@ -158,4 +161,3 @@ if preprocessing_wf :
 if variantcalling_wf :
   #run_debug(docker_varcall)
   run_workflow(docker_varcall)
-
