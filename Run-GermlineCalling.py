@@ -134,16 +134,14 @@ project_path      = get_project_path()
 
 #--- Test if path are valid ---
 
-#--- convert path to absolute ---
-
-input_path     = os.path.abspath(input_path)
-output_path    = os.path.abspath(output_path)
+is_absolute(input_path)
+is_absolute(output_path)
 test_path(args.input_folder)
 test_path(args.output_folder)
 
 
 
-# Docker command
+#--- Docker command
 
 docker_prepros = build_docker_command(input_path, output_path, reference_folder, prepros_yaml_file, custom_env, custom_user_id, project_path, container_id)
 docker_varcall = build_docker_command(input_path, output_path, reference_folder, calling_yaml_file, custom_env, custom_user_id, project_path, container_id)
