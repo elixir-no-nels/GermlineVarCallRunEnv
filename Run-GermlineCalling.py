@@ -22,6 +22,8 @@ args = parser.parse_args()
 #--- Functions ---
 
 def get_project_path():
+  # Hardcoding the shared disk prefix as the root where input and output folders 
+  # need to reside below
   path = "/tsd/p172ncspmdata/"
   return path
 
@@ -30,11 +32,15 @@ def get_project_path():
 #  pathArray = path.split(os.sep)
 #  return("/{0}/{1}/".format(pathArray[1],pathArray[2]))
 
-
 def get_path_from_project(path):
   path = os.path.normpath(path)
   pathArray = path.split(os.sep)
-  if "/{0}/{1}/".format(pathArray[1],pathArray[2]) == get_project_path():
+#  if "/{0}/{1}/".format(pathArray[1],pathArray[2]) == get_project_path():
+  if "/{0}/{1}/{2}/{3}/{4}/".format(pathArray[1],pathArray[2],pathArray[3],pathArray[4],pathArray[5]) == get_project_path():
+    del pathArray[0]
+    del pathArray[0]
+    del pathArray[0]
+    # additional prefixed folder levels to remove in testing setting
     del pathArray[0]
     del pathArray[0]
     del pathArray[0]
@@ -96,6 +102,8 @@ def get_gid():
 
 def build_docker_command(input_d, output_d, reference_d, yaml_f, cust_env, user_id, project_d, container_id):
   #--- Build the command running inside the container ---
+  # We need two volumes mounted inside the docker: mnt for input and output on shared disk
+  # and mnt2 for the TSD project area where reference data and yaml files resides  
   command         = "\
   ln -s /mnt/{0} /tmp/output && \
   ln -s /mnt/{1} /tmp/input && \
@@ -110,6 +118,14 @@ def build_docker_command(input_d, output_d, reference_d, yaml_f, cust_env, user_
   return(docker_command)
 
 
+#--- Test if user provided paths are valid , i.e. absolute and folders exists ---
+
+is_absolute(args.input_folder)
+is_absolute(args.input_folder)
+test_path(args.input_folder)
+test_path(args.output_folder)
+
+
 #--- Config ---
 
 container_id    = 'kjellptrsn/germlinevarcalldocker:latest'
@@ -122,22 +138,17 @@ custom_env        = '-e HOME=/tmp'
 input_path        = get_path_from_project(args.input_folder)
 output_path       = get_path_from_project(args.output_folder)
 
-reference_folder  = '/data/durable/varcall-workflow-testing/Germline-varcall-wf-reference-files-v2.8'
-prepros_yaml_file = '/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/preprocessing.yaml'
-calling_yaml_file = '/data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/germline_varcall.yaml'
+
+#Manually removed the prefix of the workflow dependent locations for now, these are in the hardcoded /tsd/p172 volume
+reference_folder  = 'data/durable/varcall-workflow-testing/Germline-varcall-wf-reference-files-v2.8'
+prepros_yaml_file = 'data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/preprocessing.yaml'
+calling_yaml_file = 'data/durable/varcall-workflow-testing/GermlineVarCallRunEnv/germline_varcall.yaml'
 
 preprocessing_wf  = args.preprocessing
 variantcalling_wf = args.variantcalling
 project_path      = get_project_path()
 
 
-
-#--- Test if path are valid ---
-
-is_absolute(input_path)
-is_absolute(output_path)
-test_path(args.input_folder)
-test_path(args.output_folder)
 
 
 
