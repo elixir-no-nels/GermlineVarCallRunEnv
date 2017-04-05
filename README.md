@@ -12,7 +12,7 @@ To install Docker you can follow the instructions on the Docker website: https:/
 
 Because the images is stored on a private repository you need to login ot the docker hub registrery.
 ```
-sudo docker login https://hub.docker.com -u [username]
+sudo docker login
 Password:[the password]
 Login Succeeded
 ```
