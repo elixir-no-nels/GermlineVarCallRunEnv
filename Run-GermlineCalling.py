@@ -35,15 +35,15 @@ def get_project_path():
 def get_path_from_project(path):
   path = os.path.normpath(path)
   pathArray = path.split(os.sep)
-#  if "/{0}/{1}/".format(pathArray[1],pathArray[2]) == get_project_path():
-  if "/{0}/{1}/{2}/{3}/{4}/".format(pathArray[1],pathArray[2],pathArray[3],pathArray[4],pathArray[5]) == get_project_path():
+  if "/{0}/{1}/".format(pathArray[1],pathArray[2]) == get_project_path():
+#  if "/{0}/{1}/{2}/{3}/{4}/".format(pathArray[1],pathArray[2],pathArray[3],pathArray[4],pathArray[5]) == get_project_path():
     del pathArray[0]
     del pathArray[0]
     del pathArray[0]
     # additional prefixed folder levels to remove in testing setting
-    del pathArray[0]
-    del pathArray[0]
-    del pathArray[0]
+#    del pathArray[0]
+#    del pathArray[0]
+#    del pathArray[0]
     return "/".join(pathArray)
   else:
     print("path {0} need to be absolute and in your project area : {1}").format(path, get_project_path())
