@@ -33,9 +33,6 @@ workflow_steps:
     gatk:
       - ""
     gatk_HaplotypeCaller:
-      - "--emitRefConfidence GVCF "
-      - "--variant_index_type LINEAR "
-      - "--variant_index_parameter 128000 "
       - "-XL hs37d5"
 
 
