@@ -31,7 +31,7 @@ workflow_steps:
     read_groups:
       split: "_"
       ID: 0
-      SM: 0
+      SM: "Sample"
       LB: "RH"
       PL: "ILLUMINA"
     bwa_index: "references//human_g1k_v37_decoy.fasta"
