@@ -60,7 +60,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=./TMP"
+      - "-Djava.io.tmpdir=/tmp"
     picard2:
       - "CREATE_INDEX=true"
       - "MAX_RECORDS_IN_RAM=1000000"
@@ -83,7 +83,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=./TMP"
+      - "-Djava.io.tmpdir=/tmp"
     picard2:
       - "METRICS_FILE=samples.metrics"
       - "VALIDATION_STRINGENCY=LENIENT"
@@ -108,7 +108,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=./TMP"
+      - "-Djava.io.tmpdir=/tmp"
     gatk:
       - " "
     gatk_recal:
@@ -119,6 +119,3 @@ workflow_steps:
       - " -cov CycleCovariate "
     gatk_PrintReads:
       - ""
-
-
-
