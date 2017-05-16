@@ -30,8 +30,8 @@ workflow_steps:
     output_suffix: "_map"
     read_groups:
       split: "_"
-      ID: 0
-      SM: "Sample"
+      ID: "Sample"
+      SM: 0
       LB: "RH"
       PL: "ILLUMINA"
     bwa_index: "references//human_g1k_v37_decoy.fasta"
@@ -60,7 +60,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=./TMP"
+      - "-Djava.io.tmpdir=/tmp"
     picard2:
       - "CREATE_INDEX=true"
       - "MAX_RECORDS_IN_RAM=1000000"
@@ -83,7 +83,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=./TMP"
+      - "-Djava.io.tmpdir=/tmp"
     picard2:
       - "METRICS_FILE=samples.metrics"
       - "VALIDATION_STRINGENCY=LENIENT"
@@ -108,7 +108,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=./TMP"
+      - "-Djava.io.tmpdir=/tmp"
     gatk:
       - " "
     gatk_recal:
@@ -117,8 +117,6 @@ workflow_steps:
       - " -knownSites references/dbsnp.vcf "
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
+      - " -XL hs37d5"
     gatk_PrintReads:
-      - ""
-
-
-
+      - "-XL hs37d5"

@@ -29,7 +29,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=./TMP"
+      - "-Djava.io.tmpdir=/tmp"
     gatk:
       - ""
     gatk_HaplotypeCaller:
@@ -60,7 +60,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=./TMP"
+      - "-Djava.io.tmpdir=/tmp"
     gatk:
       - ""
     gatk_GVCF:
@@ -89,7 +89,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=./TMP"
+      - "-Djava.io.tmpdir=/tmp"
     gatk:
       - ""
     gatk_vr:
@@ -120,7 +120,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=./TMP"
+      - "-Djava.io.tmpdir=/tmp"
     gatk:
       - ""
     gatk_vr:
@@ -133,5 +133,3 @@ workflow_steps:
       - "-tranche 99.3 -tranche 99.0 -tranche 98.0 -tranche 97.0 -tranche 90.0"
     gatk_ar:
       - "--ts_filter_level 99.6 "
-
-
