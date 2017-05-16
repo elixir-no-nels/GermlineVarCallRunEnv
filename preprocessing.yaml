@@ -110,7 +110,7 @@ workflow_steps:
       - "-Xmx15G"
       - "-Djava.io.tmpdir=/tmp"
     gatk:
-      - " "
+      - "-XL hs37d5 "
     gatk_recal:
       - " -knownSites references/1000g.vcf "
       - " -knownSites references/Mills_and_1000G_gold_standard.indels.b37.vcf "
@@ -118,4 +118,4 @@ workflow_steps:
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
     gatk_PrintReads:
-      - ""
+      - "-XL hs37d5"
