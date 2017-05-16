@@ -30,7 +30,7 @@ workflow_steps:
     output_suffix: "_map"
     read_groups:
       split: "_"
-      ID: "G"
+      ID: "Sample"
       SM: 0
       LB: "RH"
       PL: "ILLUMINA"
@@ -45,18 +45,18 @@ workflow_steps:
 #
 
 -
-  tool: "Picard2"
-  id: "Picard_SortSam"
+  tool: "Picard2MultiInput"
+  id: "Picard_SortMergeSam"
   desc: "picard sorting"
   depend_from: ["bwa_mem_loop"]
   step_options:
-    input_dir: "output/01_mapping_bwa"
+    input_dir: "Outputs/01_mapping_bwa"
     input_files: "*.sam"
-    output_dir: "output/02_bamsorted"
+    output_dir: "Outputs/02_bamsorted"
     output_suffix: "_sorted"
     java_bin: "java"
     picard2_jar: "/Jar/picard.jar"
-    picard2_command: "SortSam"
+    picard2_command: "MergeSamFiles"
   command_line_options:
     java:
       - "-Xmx15G"
@@ -71,7 +71,7 @@ workflow_steps:
   tool: "Picard2"
   id: "picard_mark_duplicate"
   desc: "picard mark duplicate and merge lanes"
-  depend_from: ["Picard_SortSam"]
+  depend_from: ["Picard_SortMergeSam"]
   step_options:
     input_dir: "output/02_bamsorted"
     input_files: "*.bam"
