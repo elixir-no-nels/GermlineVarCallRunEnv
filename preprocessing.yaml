@@ -50,9 +50,9 @@ workflow_steps:
   desc: "picard sorting"
   depend_from: ["bwa_mem_loop"]
   step_options:
-    input_dir: "Outputs/01_mapping_bwa"
+    input_dir: "output/01_mapping_bwa"
     input_files: "*.sam"
-    output_dir: "Outputs/02_bamsorted"
+    output_dir: "output/02_bamsorted"
     output_suffix: "_sorted"
     java_bin: "java"
     picard2_jar: "/Jar/picard.jar"
