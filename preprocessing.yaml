@@ -63,6 +63,7 @@ workflow_steps:
       - "-Djava.io.tmpdir=/tmp"
     picard2:
       - "CREATE_INDEX=true"
+      - "USE_THREADING=true"
       - "MAX_RECORDS_IN_RAM=1000000"
       - "SORT_ORDER=coordinate"
       - "VALIDATION_STRINGENCY=LENIENT"
