@@ -117,6 +117,5 @@ workflow_steps:
       - " -knownSites references/dbsnp.vcf "
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
-      - " -XL hs37d5"
     gatk_PrintReads:
-      - "-XL hs37d5"
+      - ""
