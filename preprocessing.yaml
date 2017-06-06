@@ -63,6 +63,7 @@ workflow_steps:
       - "-Djava.io.tmpdir=/tmp"
     picard2:
       - "CREATE_INDEX=true"
+      - "USE_THREADING=true"
       - "MAX_RECORDS_IN_RAM=1000000"
       - "SORT_ORDER=coordinate"
       - "VALIDATION_STRINGENCY=LENIENT"
@@ -117,6 +118,5 @@ workflow_steps:
       - " -knownSites references/dbsnp.vcf "
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
-      - " -XL hs37d5"
     gatk_PrintReads:
-      - "-XL hs37d5"
+      - ""

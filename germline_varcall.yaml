@@ -54,7 +54,7 @@ workflow_steps:
     output_dir: "output/12_Genotypes"
     output_suffix: "_haplotype"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
-    core: 4
+    core: 16
     java_bin: "java"
     ref_path:   "references//human_g1k_v37_decoy.fasta"
   command_line_options:
@@ -82,7 +82,7 @@ workflow_steps:
     output_dir: "output/13_variants_INDELs"
     output_suffix: "INDEL"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
-    core: 4
+    core: 16
     java_bin: "java"
     ref_path:   "references//human_g1k_v37_decoy.fasta"
     mode: "INDEL"
@@ -98,6 +98,7 @@ workflow_steps:
       - "-an QD -an FS -an SOR -an DP -an ReadPosRankSum -an MQRankSum "
       - "-tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.5 -tranche 99.0 -tranche 97.0 -tranche 96.0 -tranche 95.0 -tranche 94.0 "
       - "-tranche 93.5 -tranche 93.0 -tranche 92.0 -tranche 91.0 -tranche 90.0 "
+      - "-mG 4"
     gatk_ar:
       - "--ts_filter_level 95.0 "
 
@@ -113,7 +114,7 @@ workflow_steps:
     output_dir: "output/13_variants_SNPs"
     output_suffix: "SNPs"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
-    core: 4
+    core: 16
     java_bin: "java"
     ref_path:   "references//human_g1k_v37_decoy.fasta"
     mode: "SNP"
