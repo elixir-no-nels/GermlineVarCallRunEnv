@@ -30,8 +30,8 @@ workflow_steps:
     output_suffix: "_map"
     read_groups:
       split: "_"
-      ID: "Sample"
-      SM: 0
+      ID: 0
+      SM: "Sample"
       LB: "RH"
       PL: "ILLUMINA"
     bwa_index: "references//human_g1k_v37_decoy.fasta"
