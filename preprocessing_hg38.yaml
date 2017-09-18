@@ -1,0 +1,122 @@
+---
+info:
+  name: "Preprocessing_FastQ_to_BAM"
+  desc: "Ghislain Fournous"
+  log_dir: "output/Logs"
+  steps_status_dir: "output/FinishedSteps"
+
+
+workflow_steps:
+
+
+#
+# Mapping
+#
+
+-
+  tool: "BWA_MEM"
+  id: "bwa_mem_loop"
+  desc: "BWA-mem"
+  depend_from: ""
+  step_options:
+    bwa_bin: "bwa"
+    core: 16
+    input_dir: "input"
+    input_name: "*"
+    input_extension: "fastq.gz"
+    input_R1_tag: "R1"
+    input_R2_tag: "R2"
+    output_dir: "output/01_mapping_bwa"
+    output_suffix: "_map"
+    read_groups:
+      split: "_"
+      ID: 0
+      SM: "Sample"
+      LB: "RH"
+      PL: "ILLUMINA"
+    bwa_index: "references/Homo_sapiens_assembly38.fasta"
+  command_line_options:
+    bwa:
+      - "-M"
+
+
+#
+# PreProcessing
+#
+
+-
+  tool: "Picard2MultiInput"
+  id: "Picard_SortMergeSam"
+  desc: "picard sorting"
+  depend_from: ["bwa_mem_loop"]
+  step_options:
+    input_dir: "output/01_mapping_bwa"
+    input_files: "*.sam"
+    output_dir: "output/02_bamsorted"
+    output_suffix: "_sorted"
+    java_bin: "java"
+    picard2_jar: "/Jar/picard.jar"
+    picard2_command: "MergeSamFiles"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
+    picard2:
+      - "CREATE_INDEX=true"
+      - "USE_THREADING=true"
+      - "MAX_RECORDS_IN_RAM=1000000"
+      - "SORT_ORDER=coordinate"
+      - "VALIDATION_STRINGENCY=LENIENT"
+
+-
+  tool: "Picard2"
+  id: "picard_mark_duplicate"
+  desc: "picard mark duplicate and merge lanes"
+  depend_from: ["Picard_SortMergeSam"]
+  step_options:
+    input_dir: "output/02_bamsorted"
+    input_files: "*.bam"
+    output_dir: "output/03_markdup"
+    output_suffix: "_markdup"
+    java_bin: "java"
+    picard2_jar: "/Jar/picard.jar"
+    picard2_command: "MarkDuplicates"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
+    picard2:
+      - "METRICS_FILE=samples.metrics"
+      - "VALIDATION_STRINGENCY=LENIENT"
+      - "CREATE_INDEX=true"
+      - "MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=1000"
+
+-
+  tool: "GATK_BaseRecalibrator_PrintReads"
+  id: "GATK_BaseRecalibrator"
+  desc: "GATK Fix Mate Base Recalibration"
+  depend_from: ["picard_mark_duplicate"]
+  result: "true"
+  step_options:
+    core: 10
+    input_dir: "output/03_markdup"
+    input_files: "*.bam"
+    output_dir: "output/04_gatk_recal"
+    output_suffix: "_recalib"
+    java_bin: "java"
+    gatk_jar: "/Jar/GenomeAnalysisTK.jar"
+    ref_path:   "references/Homo_sapiens_assembly38.fasta"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
+    gatk:
+      - " "
+    gatk_recal:
+      - " -knownSites references/1000G_phase1.snps.high_confidence.hg38.vcf.gz "
+      - " -knownSites references/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz "
+      - " -knownSites references/dbsnp_146.hg38.vcf.gz "
+      - " -cov ContextCovariate "
+      - " -cov CycleCovariate "
+    gatk_PrintReads:
+      - " -nct "

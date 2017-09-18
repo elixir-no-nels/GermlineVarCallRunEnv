@@ -1,0 +1,136 @@
+---
+info:
+  name: "Germline_variant_calling"
+  desc: "Lars Birger Aasheim"
+  log_dir: "output/Logs"
+  steps_status_dir: "output/FinishedSteps"
+
+
+workflow_steps:
+
+#
+# Germline variant Calling
+#
+
+-
+  tool: "GATK_HaplotypeCaller"
+  id: "GATK_HaplotypeCaller_loop"
+  desc: "Call Variants from Bam"
+  depend_from: ""
+  step_options:
+    input_dir: "output/04_gatk_recal"
+    input_files: "*.bam"
+    output_dir: "output/11_Haplotypes"
+    output_suffix: "haplotype"
+    gatk_jar: "/Jar/GenomeAnalysisTK.jar"
+    core: 8 # This is a risky setting due to a random crash risk. Use at your own risk. Values over 8 are often detrimental to performance.
+    java_bin: "java"
+    ref_path:   "references/Homo_sapiens_assembly38.fasta"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
+    gatk:
+      - ""
+    gatk_HaplotypeCaller:
+      - "--emitRefConfidence GVCF "		
+      - "--variant_index_type LINEAR "		
+      - "--variant_index_parameter 128000 "
+      - " -L references/hg38_S06588914_AllTracks.bed "
+
+#
+# Merging
+#
+
+-
+  tool: "GATK_GenotypeGVCFs"
+  id: "GATK_GenotypeGVCFs_merge"
+  desc: "Merge all VCF"
+  depend_from: ["GATK_HaplotypeCaller_loop"]
+  step_options:
+    input_dir: "output/11_Haplotypes"
+    input_files: "*.vcf"
+    output_dir: "output/12_Genotypes"
+    output_suffix: "_haplotype"
+    gatk_jar: "/Jar/GenomeAnalysisTK.jar"
+    core: 16
+    java_bin: "java"
+    ref_path:   "references/Homo_sapiens_assembly38.fasta"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
+    gatk:
+      - ""
+    gatk_GVCF:
+      - ""
+
+#
+# Recalibration
+#
+
+-
+  tool: "GATK_VariantRecalibratorApplied"
+  id: "GATK_VariantRecalibratorApplied_INDEL"
+  desc: "Variant Recalibration for Indels"
+  depend_from: ["GATK_GenotypeGVCFs_merge"]
+  result: "true"
+  step_options:
+    input_dir: "output/12_Genotypes"
+    input_files: "*.vcf"
+    output_dir: "output/13_variants_INDELs"
+    output_suffix: "INDEL"
+    gatk_jar: "/Jar/GenomeAnalysisTK.jar"
+    core: 16
+    java_bin: "java"
+    ref_path:   "references/Homo_sapiens_assembly38.fasta"
+    mode: "INDEL"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
+    gatk:
+      - ""
+    gatk_vr:
+      - "-resource:mills,known=false,training=true,truth=true,prior=12.0 references/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz "
+      - "-resource:dbsnp,known=true,training=false,truth=false,prior=2.0 references/dbsnp_146.hg38.vcf.gz "
+      - "-an QD -an FS -an SOR -an DP -an ReadPosRankSum -an MQRankSum "
+      - "-tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.5 -tranche 99.0 -tranche 97.0 -tranche 96.0 -tranche 95.0 -tranche 94.0 "
+      - "-tranche 93.5 -tranche 93.0 -tranche 92.0 -tranche 91.0 -tranche 90.0 "
+      - "-mG 4"
+    gatk_ar:
+      - "--ts_filter_level 95.0 "
+
+-
+  tool: "GATK_VariantRecalibratorApplied"
+  id: "GATK_VariantRecalibratorApplied_SNPs"
+  desc: "Variant Recalibration for SNPs"
+  depend_from: ["GATK_GenotypeGVCFs_merge"]
+  result: "true"
+  step_options:
+    input_dir: "output/12_Genotypes"
+    input_files: "*.vcf"
+    output_dir: "output/13_variants_SNPs"
+    output_suffix: "SNPs"
+    gatk_jar: "/Jar/GenomeAnalysisTK.jar"
+    core: 16
+    java_bin: "java"
+    ref_path:   "references/Homo_sapiens_assembly38.fasta"
+    mode: "SNP"
+  command_line_options:
+    java:
+      - "-Xmx15G"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
+    gatk:
+      - ""
+    gatk_vr:
+      - "-resource:omni,known=false,training=true,truth=true,prior=12.0 references/1000G_omni2.5.hg38.vcf.gz "
+      - "-resource:1000G,known=false,training=true,truth=false,prior=10.0 references/1000G_phase1.snps.high_confidence.hg38.vcf.gz "
+      - "-resource:dbsnp,known=true,training=false,truth=false,prior=2.0 references/dbsnp_146.hg38.vcf.gz "
+      - "-resource:hapmap,known=false,training=true,truth=true,prior=15.0 references/hapmap_3.3.hg38.vcf.gz "
+      - "-an QD -an MQ -an DP -an FS -an SOR -an MQRankSum -an ReadPosRankSum "
+      - "-tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.6 -tranche 99.5 -tranche 99.4 "
+      - "-tranche 99.3 -tranche 99.0 -tranche 98.0 -tranche 97.0 -tranche 90.0"
+      - "-mG 4"
+    gatk_ar:
+      - "--ts_filter_level 99.6 "
