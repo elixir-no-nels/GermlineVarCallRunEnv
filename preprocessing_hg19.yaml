@@ -14,26 +14,16 @@ workflow_steps:
 #
 
 -
-  tool: "BWA_MEM"
+  tool: "BWA_MEM_CSV"
   id: "bwa_mem_loop"
-  desc: "BWA-mem"
+  desc: "BWA-mem_csv"
   depend_from: ""
   step_options:
     bwa_bin: "bwa"
     core: 16
-    input_dir: "input"
-    input_name: "*"
-    input_extension: "fastq.gz"
-    input_R1_tag: "R1"
-    input_R2_tag: "R2"
+    input_csv: "/Workflow/input.csv"
     output_dir: "output/01_mapping_bwa"
     output_suffix: "_map"
-    read_groups:
-      split: "_"
-      ID: 0
-      SM: "Sample"
-      LB: "RH"
-      PL: "ILLUMINA"
     bwa_index: "references//human_g1k_v37_decoy.fasta"
   command_line_options:
     bwa:
