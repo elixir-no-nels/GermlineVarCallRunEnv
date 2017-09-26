@@ -108,6 +108,6 @@ workflow_steps:
       - " -knownSites references/dbsnp.vcf "
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
-      - " -L references/hg19_S06588914_AllTracks.bed "
+      - " -L references/user_provided_interval_list "
     gatk_PrintReads:
       - "-nct "

@@ -36,7 +36,7 @@ workflow_steps:
       - "--emitRefConfidence GVCF "		
       - "--variant_index_type LINEAR "		
       - "--variant_index_parameter 128000 "
-      - " -L references/hg38_S06588914_AllTracks.bed "
+      - " -L references/user_provided_interval_list "
 
 #
 # Merging

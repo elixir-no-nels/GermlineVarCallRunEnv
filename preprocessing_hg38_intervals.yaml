@@ -108,6 +108,6 @@ workflow_steps:
       - " -knownSites references/dbsnp_146.hg38.vcf.gz "
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
-      - " -L references/hg38_S06588914_AllTracks.bed "
+      - " -L references/user_provided_interval_list "
     gatk_PrintReads:
       - " -nct "
