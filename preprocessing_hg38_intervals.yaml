@@ -24,7 +24,7 @@ workflow_steps:
     input_csv: "/Workflow/input.csv"
     output_dir: "output/01_mapping_bwa"
     output_suffix: "_map"
-    bwa_index: "references//human_g1k_v37_decoy.fasta"
+    bwa_index: "references/Homo_sapiens_assembly38.fasta"
   command_line_options:
     bwa:
       - "-M"
@@ -108,6 +108,6 @@ workflow_steps:
       - " -knownSites references/dbsnp_146.hg38.vcf.gz "
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
-      - " -L references/user_provided_interval_list "
+      - " -L references/hg38_interval_list.bed "
     gatk_PrintReads:
       - " -nct "
