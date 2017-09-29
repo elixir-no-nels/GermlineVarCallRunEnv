@@ -36,7 +36,7 @@ workflow_steps:
       - "--emitRefConfidence GVCF "		
       - "--variant_index_type LINEAR "		
       - "--variant_index_parameter 128000 "
-      - "-L references/hg19_S06588914_AllTracks.bed "
+      - "-L references/hg19_interval_list.bed "
 
 
 #
@@ -132,6 +132,5 @@ workflow_steps:
       - "-an QD -an MQ -an DP -an FS -an SOR -an MQRankSum -an ReadPosRankSum "
       - "-tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.6 -tranche 99.5 -tranche 99.4 "
       - "-tranche 99.3 -tranche 99.0 -tranche 98.0 -tranche 97.0 -tranche 90.0"
-      - "-mG 4"
     gatk_ar:
       - "--ts_filter_level 99.6 "

@@ -112,4 +112,4 @@ workflow_steps:
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
     gatk_PrintReads:
-      - "-nct 8"
+      - "-nct "

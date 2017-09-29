@@ -17,7 +17,7 @@ parser.add_argument("-o", "--output_folder",    type=str, required=True, help="P
 parser.add_argument("-r", "--reference",        type=str, required=True, help="Human genome referance : hg19, hg38")
 parser.add_argument("-p", "--preprocessing",    action='store_true', required=False, default=False, help="Run the preprocessing   part of the workflow")
 parser.add_argument("-v", "--variantcalling",   action='store_true', required=False, default=False, help="Run the variant calling part of the workflow")
-
+parser.add_argument("-l", "--interval_list",    action='store_true', required=False, default=False, help="Run the pipeline with interval list")
 
 args = parser.parse_args()
 
@@ -108,10 +108,9 @@ test_file(args.input_tsv)
 test_path(args.input_folder)
 test_path(args.output_folder)
 
-
 #--- Config ---
 
-container_id      = 'ghislain/germlinevarcalldockercsv:latest'
+container_id      = 'oskarv/germlinedocker'
 
 member_group      = '2892' # p172-member-group
 
@@ -123,6 +122,7 @@ custom_env        = '-e HOME=/tmp'
 input_path        = args.input_folder
 input_tsv         = args.input_tsv
 output_path       = args.output_folder
+interval_list     = args.interval_list
 
 run_tag           = int(time.time()*1000) # epoch time in millisecond as tag
 
@@ -132,14 +132,22 @@ run_tag           = int(time.time()*1000) # epoch time in millisecond as tag
 reference_folder  = ''
 prepros_yaml_file = ''
 calling_yaml_file = ''
-if args.reference == 'hg19':
-    reference_folder  = '/tsd/p172/docker/reference-data/Germline-varcall-wf-reference-files-v2.8'
-    prepros_yaml_file = '/tsd/p172/docker/development/GermlineVarCallRunEnv_hg38_hg19/preprocessing_hg19.yaml'
-    calling_yaml_file = '/tsd/p172/docker/development/GermlineVarCallRunEnv_hg38_hg19/germline_varcall_hg19.yaml'
+if (args.reference == 'hg19' and args.interval_list ):
+    reference_folder = '/home/oskar/01-workspace/01-data/refdata/hg19'
+    prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg19_intervals.yaml'
+    calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg19_intervals.yaml'
+elif (args.reference == 'hg38' and args.interval_list ):
+    reference_folder = '/home/oskar/01-workspace/01-data/refdata/hg38'
+    prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg38_intervals.yaml'
+    calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg38_intervals.yaml'
+elif args.reference == 'hg19':
+    reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg19'
+    prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg19.yaml'
+    calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg19.yaml'
 elif args.reference == 'hg38':
-    reference_folder  = '/tsd/p172/docker/reference-data/Germline-varcall-wf-reference-files-hg38/'
-    prepros_yaml_file = '/tsd/p172/docker/development/GermlineVarCallRunEnv_hg38_hg19/preprocessing_hg38.yaml'
-    calling_yaml_file = '/tsd/p172/docker/development/GermlineVarCallRunEnv_hg38_hg19/germline_varcall_hg38.yaml'
+    reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg38'
+    prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg38.yaml'
+    calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg38.yaml'
 else:
     print('Error: reference must be hg19 or hg38')
     exit()
