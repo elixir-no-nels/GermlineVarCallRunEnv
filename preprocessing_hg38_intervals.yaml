@@ -111,6 +111,6 @@ workflow_steps:
       - " -knownSites references/dbsnp_146.hg38.vcf.gz "
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
-      - " -L references/hg38_interval_list.bed "
+      - " -L /Workflow/interval_list.bed "
     gatk_PrintReads:
       - " -nct "

@@ -15,9 +15,9 @@ parser.add_argument("-i", "--input_folder",     type=str, required=True, help="P
 parser.add_argument("-t", "--input_tsv",        type=str, required=True, help="Tab separated file with fastq info")
 parser.add_argument("-o", "--output_folder",    type=str, required=True, help="Path of the output folder")
 parser.add_argument("-r", "--reference",        type=str, required=True, help="Human genome referance : hg19, hg38")
+parser.add_argument("-l", "--intervals",        type=str, required=True, help="Optional intevals file")
 parser.add_argument("-p", "--preprocessing",    action='store_true', required=False, default=False, help="Run the preprocessing   part of the workflow")
 parser.add_argument("-v", "--variantcalling",   action='store_true', required=False, default=False, help="Run the variant calling part of the workflow")
-parser.add_argument("-l", "--interval_list",    action='store_true', required=False, default=False, help="Run the pipeline with interval list")
 
 args = parser.parse_args()
 
@@ -74,11 +74,15 @@ def get_gid():
   return output.strip()
 
 
-def build_docker_command(input_d, input_tsv, output_d, reference_d, yaml_f, tmp_dir, cust_env, user_id, container_id, name):
-  rm_docker = "--rm"
+def build_docker_command(input_d, input_tsv, output_d, reference_d, yaml_f, interval_f, tmp_dir, cust_env, user_id, container_id, name):
+  rm_docker = '--rm'
   #rm_docker = ""
   #--- Build the command running inside the container ---
-  command         = "rbFlow.rb -r -c /Workflow/workflow.yaml"
+  command         = 'rbFlow.rb -r -c /Workflow/workflow.yaml'
+
+  # intervals
+  if interval_f != '' :
+    interval_f = "-v={0}:/Workflow/interval_list.bed".format(interval_f)
 
   #--- Start the Container ---
   docker_command  = "\
@@ -92,10 +96,11 @@ def build_docker_command(input_d, input_tsv, output_d, reference_d, yaml_f, tmp_
   -v={6}:/Workflow/workflow.yaml \
   -v={7}:/Workflow/output \
   -v={8}:/Workflow/references \
+  {9} \
   -w=/Workflow \
-  --name={9} {10} \
-  sh -c \"{11}\" \
-  ".format(cust_env, user_id, rm_docker, tmp_dir, input_d, input_tsv, yaml_f, output_d, reference_d, name, container_id, command)
+  --name={10} {11} \
+  sh -c \"{12}\" \
+  ".format(cust_env, user_id, rm_docker, tmp_dir, input_d, input_tsv, yaml_f, output_d, reference_d, interval_f, name, container_id, command)
   return(docker_command)
 
 
@@ -122,9 +127,15 @@ custom_env        = '-e HOME=/tmp'
 input_path        = args.input_folder
 input_tsv         = args.input_tsv
 output_path       = args.output_folder
-interval_list     = args.interval_list
 
 run_tag           = int(time.time()*1000) # epoch time in millisecond as tag
+
+
+# Manage Intervals
+intervals = ''
+if args.intervals != False :
+  test_file(args.intervals)
+  intervals = args.intervals
 
 
 # Choose the reference to use
@@ -132,25 +143,25 @@ run_tag           = int(time.time()*1000) # epoch time in millisecond as tag
 reference_folder  = ''
 prepros_yaml_file = ''
 calling_yaml_file = ''
-if (args.reference == 'hg19' and args.interval_list ):
-    reference_folder = '/home/oskar/01-workspace/01-data/refdata/hg19'
-    prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg19_intervals.yaml'
-    calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg19_intervals.yaml'
-elif (args.reference == 'hg38' and args.interval_list ):
-    reference_folder = '/home/oskar/01-workspace/01-data/refdata/hg38'
-    prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg38_intervals.yaml'
-    calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg38_intervals.yaml'
+if (args.reference == 'hg19' and args.intervals ):
+  reference_folder = '/home/oskar/01-workspace/01-data/refdata/hg19'
+  prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg19_intervals.yaml'
+  calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg19_intervals.yaml'
+elif (args.reference == 'hg38' and args.intervals ):
+  reference_folder = '/home/oskar/01-workspace/01-data/refdata/hg38'
+  prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg38_intervals.yaml'
+  calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg38_intervals.yaml'
 elif args.reference == 'hg19':
-    reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg19'
-    prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg19.yaml'
-    calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg19.yaml'
+  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg19'
+  prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg19.yaml'
+  calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg19.yaml'
 elif args.reference == 'hg38':
-    reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg38'
-    prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg38.yaml'
-    calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg38.yaml'
+  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg38'
+  prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg38.yaml'
+  calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg38.yaml'
 else:
-    print('Error: reference must be hg19 or hg38')
-    exit()
+  print('Error: reference must be hg19 or hg38')
+  exit()
 
 preprocessing_wf  = args.preprocessing
 variantcalling_wf = args.variantcalling
@@ -168,8 +179,8 @@ os.system("chgrp {0} {1}".format(member_group, tmp_dir))
 #--- Docker command
 preprocessing_name   = "germline_preprocessing_{0}".format(run_tag)
 variant_calling_name = "germline_variant_calling_{0}".format(run_tag)
-docker_prepros = build_docker_command(input_path, input_tsv, output_path, reference_folder, prepros_yaml_file, tmp_dir, custom_env, custom_user_id, container_id, preprocessing_name)
-docker_varcall = build_docker_command(input_path, input_tsv, output_path, reference_folder, calling_yaml_file, tmp_dir, custom_env, custom_user_id, container_id, variant_calling_name)
+docker_prepros = build_docker_command(input_path, input_tsv, output_path, reference_folder, prepros_yaml_file, intervals, tmp_dir, custom_env, custom_user_id, container_id, preprocessing_name)
+docker_varcall = build_docker_command(input_path, input_tsv, output_path, reference_folder, calling_yaml_file, intervals, tmp_dir, custom_env, custom_user_id, container_id, variant_calling_name)
 
 
 #--- Run ---
@@ -193,4 +204,3 @@ if variantcalling_wf :
 
 # fix outputs permissions
 os.system("chmod -R 775 {0}".format(output_path))
-

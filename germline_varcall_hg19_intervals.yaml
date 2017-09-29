@@ -33,10 +33,10 @@ workflow_steps:
     gatk:
       - ""
     gatk_HaplotypeCaller:
-      - "--emitRefConfidence GVCF "		
-      - "--variant_index_type LINEAR "		
+      - "--emitRefConfidence GVCF "
+      - "--variant_index_type LINEAR "
       - "--variant_index_parameter 128000 "
-      - "-L references/hg19_interval_list.bed "
+      - "-L /Workflow/interval_list.bed "
 
 
 #
