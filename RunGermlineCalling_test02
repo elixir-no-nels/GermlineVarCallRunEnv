@@ -6,10 +6,7 @@ import argparse
 import subprocess
 import time
 
-
-
-#--- Args ---
-
+# --- Args ---
 parser = argparse.ArgumentParser(description="Docker Workflow wrapper")
 parser.add_argument("-i", "--input_folder",     type=str, required=True, help="Path of the input  file")
 parser.add_argument("-t", "--input_tsv",        type=str, required=True, help="Tab separated file with fastq info")
@@ -22,8 +19,7 @@ parser.add_argument("-v", "--variantcalling",   action='store_true', required=Fa
 args = parser.parse_args()
 
 
-#--- Functions ---
-
+# --- Functions ---
 def run_workflow(docker_command):
   process = subprocess.Popen(docker_command, close_fds=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
   while process.poll() is None:
@@ -77,14 +73,14 @@ def get_gid():
 def build_docker_command(input_d, input_tsv, output_d, reference_d, yaml_f, interval_f, tmp_dir, cust_env, user_id, container_id, name):
   rm_docker = '--rm'
   #rm_docker = ""
-  #--- Build the command running inside the container ---
+  # --- Build the command running inside the container ---
   command         = 'rbFlow.rb -r -c /Workflow/workflow.yaml'
 
   # intervals
   if interval_f != '' :
     interval_f = "-v={0}:/Workflow/interval_list.bed".format(interval_f)
 
-  #--- Start the Container ---
+  # --- Start the Container ---
   docker_command  = "\
   docker run -t \
   --rm {0} \
@@ -104,8 +100,7 @@ def build_docker_command(input_d, input_tsv, output_d, reference_d, yaml_f, inte
   return(docker_command)
 
 
-#--- Test if user provided paths are valid , i.e. absolute and folders exists ---
-
+# --- Test if user provided paths are valid , i.e. absolute and folders exists ---
 is_absolute(args.input_tsv)
 is_absolute(args.input_folder)
 is_absolute(args.output_folder)
@@ -113,9 +108,9 @@ test_file(args.input_tsv)
 test_path(args.input_folder)
 test_path(args.output_folder)
 
-#--- Config ---
 
-container_id      = 'oskarv/germlinedocker'
+# --- Config ---
+container_id      = 'ghislain/germlinevarcalldockercsv:latest'
 
 member_group      = '2892' # p172-member-group
 
@@ -139,16 +134,16 @@ if args.intervals != False :
 
 
 # Choose the reference to use
-#Manually removed the prefix of the workflow dependent locations for now, these are in the hardcoded /tsd/p172 volume
+# Manually removed the prefix of the workflow dependent locations for now, these are in the hardcoded /tsd/p172 volume
 reference_folder  = ''
 prepros_yaml_file = ''
 calling_yaml_file = ''
-if (args.reference == 'hg19' and args.intervals ):
-  reference_folder = '/home/oskar/01-workspace/01-data/refdata/hg19'
+if (args.reference  == 'hg19' and args.intervals ):
+  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg19'
   prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg19_intervals.yaml'
   calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg19_intervals.yaml'
 elif (args.reference == 'hg38' and args.intervals ):
-  reference_folder = '/home/oskar/01-workspace/01-data/refdata/hg38'
+  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg38'
   prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg38_intervals.yaml'
   calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg38_intervals.yaml'
 elif args.reference == 'hg19':
@@ -176,16 +171,14 @@ os.system("chmod -R ugo+rwX {0}".format(tmp_dir))
 os.system("chgrp {0} {1}".format(member_group, tmp_dir))
 
 
-#--- Docker command
+# --- Docker command
 preprocessing_name   = "germline_preprocessing_{0}".format(run_tag)
 variant_calling_name = "germline_variant_calling_{0}".format(run_tag)
 docker_prepros = build_docker_command(input_path, input_tsv, output_path, reference_folder, prepros_yaml_file, intervals, tmp_dir, custom_env, custom_user_id, container_id, preprocessing_name)
 docker_varcall = build_docker_command(input_path, input_tsv, output_path, reference_folder, calling_yaml_file, intervals, tmp_dir, custom_env, custom_user_id, container_id, variant_calling_name)
 
 
-#--- Run ---
-
-
+# --- Run ---
 if (preprocessing_wf == False) and (variantcalling_wf == False) :
   print('Preprocessing or Variant calling needs to be selected\n  Use -p option for Preprocessing\n  Use -v option for variant calling\n  Use -p -v to run both of them')
 
