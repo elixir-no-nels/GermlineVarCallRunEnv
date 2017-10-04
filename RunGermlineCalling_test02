@@ -12,7 +12,7 @@ parser.add_argument("-i", "--input_folder",     type=str, required=True, help="P
 parser.add_argument("-t", "--input_tsv",        type=str, required=True, help="Tab separated file with fastq info")
 parser.add_argument("-o", "--output_folder",    type=str, required=True, help="Path of the output folder")
 parser.add_argument("-r", "--reference",        type=str, required=True, help="Human genome referance : hg19, hg38")
-parser.add_argument("-l", "--intervals",        type=str, required=True, help="Optional intevals file")
+parser.add_argument("-l", "--intervals",        type=str, required=False, default=False, help="Optional intevals file")
 parser.add_argument("-p", "--preprocessing",    action='store_true', required=False, default=False, help="Run the preprocessing   part of the workflow")
 parser.add_argument("-v", "--variantcalling",   action='store_true', required=False, default=False, help="Run the variant calling part of the workflow")
 
