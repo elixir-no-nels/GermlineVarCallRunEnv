@@ -1,0 +1,33 @@
+INFO  12:40:39,776 HelpFormatter - -------------------------------------------------------------------------------- 
+INFO  12:40:39,779 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.7-0-gcfedb67, Compiled 2016/12/12 11:21:18 
+INFO  12:40:39,779 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  12:40:39,779 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  12:40:39,780 HelpFormatter - [Wed Oct 04 12:40:39 GMT 2017] Executing on Linux 4.10.0-35-generic amd64 
+INFO  12:40:39,780 HelpFormatter - Java HotSpot(TM) 64-Bit Server VM 1.8.0_144-b01 
+INFO  12:40:39,785 HelpFormatter - Program Args: -T PrintReads -nct 10 -R references//human_g1k_v37_decoy.fasta -I output/03_markdup/SAMPLE1_1_FlowCellX_map_sorted_markdup.bam -BQSR /Workflow//output/04_gatk_recal/SAMPLE1_1_FlowCellX_map_sorted_markdup_recalib.grp -o /Workflow//output/04_gatk_recal/SAMPLE1_1_FlowCellX_map_sorted_markdup_recalib.bam -nct 
+INFO  12:40:39,788 HelpFormatter - Executing as root@fdf64c1ec946 on Linux 4.10.0-35-generic amd64; Java HotSpot(TM) 64-Bit Server VM 1.8.0_144-b01. 
+INFO  12:40:39,789 HelpFormatter - Date/Time: 2017/10/04 12:40:39 
+INFO  12:40:39,789 HelpFormatter - -------------------------------------------------------------------------------- 
+INFO  12:40:39,789 HelpFormatter - -------------------------------------------------------------------------------- 
+INFO  12:40:39,829 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  12:40:40,284 ContextCovariate - 		Context sizes: base substitution model 2, indel substitution model 3 
+INFO  12:40:40,317 GenomeAnalysisEngine - Downsampling Settings: No downsampling 
+INFO  12:40:40,326 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  12:40:40,370 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.04 
+INFO  12:40:40,394 MicroScheduler - Running the GATK in parallel mode with 10 total threads, 10 CPU thread(s) for each of 1 data thread(s), of 4 processors available on this machine 
+WARN  12:40:40,394 MicroScheduler - Number of requested GATK threads 10 is more than the number of available processors on this machine 4 
+INFO  12:40:40,514 GenomeAnalysisEngine - Preparing for traversal over 1 BAM files 
+INFO  12:40:40,519 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  12:40:40,519 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  12:40:40,519 ProgressMeter -                 | processed |    time |    per 1M |           |   total | remaining 
+INFO  12:40:40,519 ProgressMeter -        Location |     reads | elapsed |     reads | completed | runtime |   runtime 
+INFO  12:40:40,527 ReadShardBalancer$1 - Loading BAM index data 
+INFO  12:40:40,529 ReadShardBalancer$1 - Done loading BAM index data 
+INFO  12:40:46,274 Walker - [REDUCE RESULT] Traversal result is: org.broadinstitute.gatk.engine.io.stubs.SAMFileWriterStub@3350ab4 
+INFO  12:40:46,277 ProgressMeter -            done     40222.0     5.0 s       2.4 m      100.0%     5.0 s       0.0 s 
+INFO  12:40:46,278 ProgressMeter - Total runtime 5.76 secs, 0.10 min, 0.00 hours 
+INFO  12:40:46,278 MicroScheduler - 0 reads were filtered out during the traversal out of approximately 40222 total reads (0.00%) 
+INFO  12:40:46,278 MicroScheduler -   -> 0 reads (0.00% of total) failing BadCigarFilter 
+INFO  12:40:46,279 MicroScheduler -   -> 0 reads (0.00% of total) failing MalformedReadFilter 
+------------------------------------------------------------------------------------------
+Done. ------------------------------------------------------------------------------------------

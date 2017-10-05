@@ -1,0 +1,15 @@
+[M::bwa_idx_load_from_disk] read 0 ALT contigs
+[M::process] read 20000 sequences (2980388 bp)...
+[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (0, 8562, 0, 0)
+[M::mem_pestat] skip orientation FF as there are not enough pairs
+[M::mem_pestat] analyzing insert size distribution for orientation FR...
+[M::mem_pestat] (25, 50, 75) percentile: (322, 372, 426)
+[M::mem_pestat] low and high boundaries for computing mean and std.dev: (114, 634)
+[M::mem_pestat] mean and std.dev: (373.67, 80.70)
+[M::mem_pestat] low and high boundaries for proper pairs: (10, 738)
+[M::mem_pestat] skip orientation RF as there are not enough pairs
+[M::mem_pestat] skip orientation RR as there are not enough pairs
+[M::mem_process_seqs] Processed 20000 reads in 11.112 CPU sec, 3.004 real sec
+[main] Version: 0.7.15-r1140
+[main] CMD: bwa mem -t 16 -R @RG\tID:FlowCellX.1\tSM:SAMPLE1\tLB:libZ\tPL:ILLUMINA\tPU:FlowCellX.1.SAMPLE1 -M references//human_g1k_v37_decoy.fasta /Workflow/input/test_R1.fastq.gz /Workflow/input/test_R2.fastq.gz
+[main] Real time: 13.373 sec; CPU: 16.284 sec

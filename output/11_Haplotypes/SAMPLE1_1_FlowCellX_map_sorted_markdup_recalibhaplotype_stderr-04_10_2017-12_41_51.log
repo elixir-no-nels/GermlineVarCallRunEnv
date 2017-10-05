@@ -1,0 +1,44 @@
+INFO  12:41:52,913 HelpFormatter - -------------------------------------------------------------------------------- 
+INFO  12:41:52,914 HelpFormatter - The Genome Analysis Toolkit (GATK) v3.7-0-gcfedb67, Compiled 2016/12/12 11:21:18 
+INFO  12:41:52,915 HelpFormatter - Copyright (c) 2010-2016 The Broad Institute 
+INFO  12:41:52,915 HelpFormatter - For support and documentation go to https://software.broadinstitute.org/gatk 
+INFO  12:41:52,915 HelpFormatter - [Wed Oct 04 12:41:52 GMT 2017] Executing on Linux 4.10.0-35-generic amd64 
+INFO  12:41:52,915 HelpFormatter - Java HotSpot(TM) 64-Bit Server VM 1.8.0_144-b01 
+INFO  12:41:52,918 HelpFormatter - Program Args: -T HaplotypeCaller -nct 8 -R references/human_g1k_v37_decoy.fasta -I output/04_gatk_recal/SAMPLE1_1_FlowCellX_map_sorted_markdup_recalib.bam -o /Workflow//output/11_Haplotypes/SAMPLE1_1_FlowCellX_map_sorted_markdup_recalibhaplotype.vcf --emitRefConfidence GVCF --variant_index_type LINEAR --variant_index_parameter 128000 -L references/hg19_interval_list.bed 
+INFO  12:41:52,921 HelpFormatter - Executing as root@d90c5cff5177 on Linux 4.10.0-35-generic amd64; Java HotSpot(TM) 64-Bit Server VM 1.8.0_144-b01. 
+INFO  12:41:52,921 HelpFormatter - Date/Time: 2017/10/04 12:41:52 
+INFO  12:41:52,921 HelpFormatter - -------------------------------------------------------------------------------- 
+INFO  12:41:52,921 HelpFormatter - -------------------------------------------------------------------------------- 
+WARN  12:41:52,925 GATKVCFUtils - Naming your output file using the .g.vcf extension will automatically set the appropriate values  for --variant_index_type and --variant_index_parameter 
+INFO  12:41:52,933 GenomeAnalysisEngine - Strictness is SILENT 
+INFO  12:41:53,008 GenomeAnalysisEngine - Downsampling Settings: Method: BY_SAMPLE, Target Coverage: 500 
+INFO  12:41:53,013 SAMDataSource$SAMReaders - Initializing SAMRecords in serial 
+INFO  12:41:53,038 SAMDataSource$SAMReaders - Done initializing BAM readers: total time 0.02 
+INFO  12:41:53,062 HCMappingQualityFilter - Filtering out reads with MAPQ < 20 
+INFO  12:42:00,829 IntervalUtils - Processing 54098923 bp from intervals 
+INFO  12:42:00,844 MicroScheduler - Running the GATK in parallel mode with 8 total threads, 8 CPU thread(s) for each of 1 data thread(s), of 4 processors available on this machine 
+WARN  12:42:00,844 MicroScheduler - Number of requested GATK threads 8 is more than the number of available processors on this machine 4 
+INFO  12:42:00,905 GenomeAnalysisEngine - Preparing for traversal over 1 BAM files 
+INFO  12:42:01,093 GenomeAnalysisEngine - Done preparing for traversal 
+INFO  12:42:01,094 ProgressMeter - [INITIALIZATION COMPLETE; STARTING PROCESSING] 
+INFO  12:42:01,094 ProgressMeter -                 |      processed |    time |         per 1M |           |   total | remaining 
+INFO  12:42:01,094 ProgressMeter -        Location | active regions | elapsed | active regions | completed | runtime |   runtime 
+INFO  12:42:01,096 HaplotypeCaller - Standard Emitting and Calling confidence set to 0.0 for reference-model confidence output 
+INFO  12:42:01,097 HaplotypeCaller - All sites annotated with PLs forced to true for reference-model confidence output 
+WARN  12:42:01,208 InbreedingCoeff - Annotation will not be calculated. InbreedingCoeff requires at least 10 unrelated samples. 
+##### ERROR ------------------------------------------------------------------------------------------
+##### ERROR A USER ERROR has occurred (version 3.7-0-gcfedb67): 
+##### ERROR
+##### ERROR This means that one or more arguments or inputs in your command are incorrect.
+##### ERROR The error message below tells you what is the problem.
+##### ERROR
+##### ERROR If the problem is an invalid argument, please check the online documentation guide
+##### ERROR (or rerun your command with --help) to view allowable command-line arguments for this tool.
+##### ERROR
+##### ERROR Visit our website and forum for extensive documentation and answers to 
+##### ERROR commonly asked questions https://software.broadinstitute.org/gatk
+##### ERROR
+##### ERROR Please do NOT post this error to the GATK forum unless you have really tried to fix it yourself.
+##### ERROR
+##### ERROR MESSAGE: Invalid command line: Argument emitRefConfidence has a bad value: Can only be used in single sample mode currently. Use the sample_name argument to run on a single sample out of a multi-sample BAM file.
+##### ERROR ------------------------------------------------------------------------------------------
