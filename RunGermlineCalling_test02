@@ -139,19 +139,19 @@ reference_folder  = ''
 prepros_yaml_file = ''
 calling_yaml_file = ''
 if (args.reference  == 'hg19' and args.intervals ):
-  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/Germline-varcall-wf-reference-files-v2.8'
+  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg19'
   prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg19_intervals.yaml'
   calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg19_intervals.yaml'
 elif (args.reference == 'hg38' and args.intervals ):
-  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/Germline-varcall-wf-reference-files-hg38'
+  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg38'
   prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg38_intervals.yaml'
   calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg38_intervals.yaml'
 elif args.reference == 'hg19':
-  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/Germline-varcall-wf-reference-files-v2.8'
+  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg19'
   prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg19.yaml'
   calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg19.yaml'
 elif args.reference == 'hg38':
-  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/Germline-varcall-wf-reference-files-hg38'
+  reference_folder  = '/home/oskar/01-workspace/01-data/refdata/hg38'
   prepros_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/preprocessing_hg38.yaml'
   calling_yaml_file = '/home/oskar/GermlineVarCallRunEnvBak/GermlineVarCallRunEnv/germline_varcall_hg38.yaml'
 else:
