@@ -44,7 +44,7 @@ workflow_steps:
     input_files: "*.sam"
     group_by_samples: "true"
     group_spliter: "_"
-    group_on_index: "0"
+    group_on_index: 0
     output_dir: "output/02_bamsorted"
     output_suffix: "_sorted"
     java_bin: "java"
