@@ -45,7 +45,7 @@ workflow_steps:
 
 -
   tool: "GATK_GenotypeGVCFs"
-  id: "GATK_GenotypeGVCFs_merge"
+  id: "GATK_GenotypeGVCFs"
   desc: "Merge all VCF"
   depend_from: ["GATK_HaplotypeCaller_loop"]
   step_options:
@@ -74,7 +74,7 @@ workflow_steps:
   tool: "GATK_VariantRecalibratorApplied"
   id: "GATK_VariantRecalibratorApplied_INDEL"
   desc: "Variant Recalibration for Indels"
-  depend_from: ["GATK_GenotypeGVCFs_merge"]
+  depend_from: ["GATK_GenotypeGVCFs"]
   result: "true"
   step_options:
     input_dir: "output/12_Genotypes"
@@ -106,7 +106,7 @@ workflow_steps:
   tool: "GATK_VariantRecalibratorApplied"
   id: "GATK_VariantRecalibratorApplied_SNPs"
   desc: "Variant Recalibration for SNPs"
-  depend_from: ["GATK_GenotypeGVCFs_merge"]
+  depend_from: ["GATK_GenotypeGVCFs"]
   result: "true"
   step_options:
     input_dir: "output/12_Genotypes"
