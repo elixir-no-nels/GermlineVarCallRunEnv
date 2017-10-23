@@ -110,7 +110,7 @@ test_path(args.output_folder)
 
 
 # --- Config ---
-container_id      = 'kjellptrsn/germlinevarcalldocker:develop'
+container_id      = 'kjellptrsn/germlinevarcalldocker:latest'
 
 member_group      = '2892' # p172-member-group
 
@@ -193,7 +193,7 @@ if variantcalling_wf :
   run_workflow(docker_varcall)
 
 # clean tmp dir
-#os.system("rm -rf {0}".format(tmp_dir))
+os.system("rm -rf {0}".format(tmp_dir))
 
 # fix outputs permissions
 os.system("chmod -R 775 {0}".format(output_path))
