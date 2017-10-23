@@ -24,7 +24,7 @@ workflow_steps:
     input_csv: "/Workflow/input.csv"
     output_dir: "output/01_mapping_bwa"
     output_suffix: "_map"
-    bwa_index: "references//human_g1k_v37_decoy.fasta"
+    bwa_index: "references/Homo_sapiens_assembly38.fasta"
   command_line_options:
     bwa:
       - "-M"
@@ -42,6 +42,9 @@ workflow_steps:
   step_options:
     input_dir: "output/01_mapping_bwa"
     input_files: "*.sam"
+    group_by_samples: "true"
+    group_spliter: "_"
+    group_on_index: 0
     output_dir: "output/02_bamsorted"
     output_suffix: "_sorted"
     java_bin: "java"
@@ -50,7 +53,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     picard2:
       - "CREATE_INDEX=true"
       - "USE_THREADING=true"
@@ -74,7 +77,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     picard2:
       - "METRICS_FILE=samples.metrics"
       - "VALIDATION_STRINGENCY=LENIENT"
@@ -95,18 +98,19 @@ workflow_steps:
     output_suffix: "_recalib"
     java_bin: "java"
     gatk_jar: "/Jar/GenomeAnalysisTK.jar"
-    ref_path:   "references//human_g1k_v37_decoy.fasta"
+    ref_path:   "references/Homo_sapiens_assembly38.fasta"
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     gatk:
       - " "
     gatk_recal:
-      - " -knownSites references/1000g.vcf "
-      - " -knownSites references/Mills_and_1000G_gold_standard.indels.b37.vcf "
-      - " -knownSites references/dbsnp.vcf "
+      - " -knownSites references/1000G_phase1.snps.high_confidence.hg38.vcf.gz "
+      - " -knownSites references/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz "
+      - " -knownSites references/dbsnp_146.hg38.vcf.gz "
       - " -cov ContextCovariate "
       - " -cov CycleCovariate "
+      - " -L /Workflow/interval_list.bed "
     gatk_PrintReads:
       - " -nct "

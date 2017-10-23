@@ -29,14 +29,14 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     gatk:
       - ""
     gatk_HaplotypeCaller:
-      - "--emitRefConfidence GVCF "		
-      - "--variant_index_type LINEAR "		
+      - "--emitRefConfidence GVCF "
+      - "--variant_index_type LINEAR "
       - "--variant_index_parameter 128000 "
-      - "-XL hs37d5"
+      - "-L /Workflow/interval_list.bed "
 
 
 #
@@ -60,7 +60,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     gatk:
       - ""
     gatk_GVCF:
@@ -89,7 +89,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     gatk:
       - ""
     gatk_vr:
@@ -121,7 +121,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     gatk:
       - ""
     gatk_vr:
@@ -132,5 +132,6 @@ workflow_steps:
       - "-an QD -an MQ -an DP -an FS -an SOR -an MQRankSum -an ReadPosRankSum "
       - "-tranche 100.0 -tranche 99.95 -tranche 99.9 -tranche 99.8 -tranche 99.6 -tranche 99.5 -tranche 99.4 "
       - "-tranche 99.3 -tranche 99.0 -tranche 98.0 -tranche 97.0 -tranche 90.0"
+      - "-mG 4"
     gatk_ar:
       - "--ts_filter_level 99.6 "

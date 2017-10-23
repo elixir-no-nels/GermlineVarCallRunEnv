@@ -29,12 +29,12 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     gatk:
       - ""
     gatk_HaplotypeCaller:
-      - "--emitRefConfidence GVCF "		
-      - "--variant_index_type LINEAR "		
+      - "--emitRefConfidence GVCF "
+      - "--variant_index_type LINEAR "
       - "--variant_index_parameter 128000 "
       - "-XL hs37d5"
 
@@ -60,7 +60,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     gatk:
       - ""
     gatk_GVCF:
@@ -89,7 +89,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     gatk:
       - ""
     gatk_vr:
@@ -121,7 +121,7 @@ workflow_steps:
   command_line_options:
     java:
       - "-Xmx15G"
-      - "-Djava.io.tmpdir=/tmp"
+      - "-Djava.io.tmpdir=/tmp/output/tmp"
     gatk:
       - ""
     gatk_vr:

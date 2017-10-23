@@ -1,0 +1,2 @@
+FlowCellX	SAMPLE1	libZ	1	test_R1.fastq.gz	test_R2.fastq.gz
+FlowCellX	SAMPLE2	libX	2	test_R1.fastq.gz	test_R2.fastq.gz
