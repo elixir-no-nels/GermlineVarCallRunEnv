@@ -12,7 +12,8 @@ parser.add_argument("-i", "--input_folder",     type=str, required=True, help="P
 parser.add_argument("-t", "--input_tsv",        type=str, required=True, help="Tab separated file with fastq info")
 parser.add_argument("-o", "--output_folder",    type=str, required=True, help="Path of the output folder")
 parser.add_argument("-r", "--reference",        type=str, required=True, help="Human genome referance : hg19, hg38")
-parser.add_argument("-l", "--intervals",        type=str, required=False, default=False, help="Optional intevals file")
+parser.add_argument("-l", "--intervals",        type=str, required=False, default=False, help="Optional intervals file")
+parser.add_argument("-k", "--keep_intermediate_files", type=str,     required=False, default=False, help="Do not remove intermediate files")
 parser.add_argument("-p", "--preprocessing",    action='store_true', required=False, default=False, help="Run the preprocessing   part of the workflow")
 parser.add_argument("-v", "--variantcalling",   action='store_true', required=False, default=False, help="Run the variant calling part of the workflow")
 
@@ -26,6 +27,16 @@ def run_workflow(docker_command):
     out = process.stdout.read(1)
     sys.stdout.write(out.decode('utf-8'))
     sys.stdout.flush()
+
+
+def clean_intermetdiate_files_from_dir(dirs, files_to_remove):
+  print("Cleanup intermediate files...")
+  files_to_remove = ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals"]
+  for dir in dirs:
+    for file in files_to_remove:
+    # Delete *sam and *bam from the dir startin by "dir"
+      os.system("rm -rf {0}/{1}".format(dir, file))
+
 
 
 def run_debug(command):
@@ -76,11 +87,11 @@ def build_docker_command(input_d, input_tsv, output_d, reference_d, yaml_f, inte
   # --- Build the command running inside the container ---
   command         = 'rbFlow.rb -r -c /Workflow/workflow.yaml'
 
-  # intervals
+  # intervals ?
   if interval_f != '' :
     interval_f = "-v={0}:/Workflow/interval_list.bed".format(interval_f)
 
-  # --- Start the Container ---
+  # --- The Container -Command--
   docker_command  = "\
   docker run -t \
   --rm {0} \
@@ -123,6 +134,8 @@ input_path        = args.input_folder
 input_tsv         = args.input_tsv
 output_path       = args.output_folder
 
+keep_intermediate_files = args.keep_intermediate_files
+
 run_tag           = int(time.time()*1000) # epoch time in millisecond as tag
 
 
@@ -135,25 +148,26 @@ if args.intervals != False :
 
 # Choose the reference to use
 # Manually removed the prefix of the workflow dependent locations for now, these are in the hardcoded /tsd/p172 volume
+dataSetsBaseDir   = '/tsd/p172/docker/'
 reference_folder  = ''
 prepros_yaml_file = ''
 calling_yaml_file = ''
 if (args.reference  == 'hg19' and args.intervals ):
-  reference_folder  = '/tsd/p172/docker/reference-data/hg19'
-  prepros_yaml_file = '/tsd/p172/docker/production/GermlineVarCallRunEnv/preprocessing_hg19_intervals.yaml'
-  calling_yaml_file = '/tsd/p172/docker/production/GermlineVarCallRunEnv/germline_varcall_hg19_intervals.yaml'
+  reference_folder  = dataSetsBaseDir + 'reference-data/hg19'
+  prepros_yaml_file = dataSetsBaseDir + 'production/GermlineVarCallRunEnv/preprocessing_hg19_intervals.yaml'
+  calling_yaml_file = dataSetsBaseDir + 'production/GermlineVarCallRunEnv/germline_varcall_hg19_intervals.yaml'
 elif (args.reference == 'hg38' and args.intervals ):
-  reference_folder  = '/tsd/p172/docker/reference-data/hg38'
-  prepros_yaml_file = '/tsd/p172/docker/production/GermlineVarCallRunEnv/preprocessing_hg38_intervals.yaml'
-  calling_yaml_file = '/tsd/p172/docker/production/GermlineVarCallRunEnv/germline_varcall_hg38_intervals.yaml'
+  reference_folder  = dataSetsBaseDir + 'reference-data/hg38'
+  prepros_yaml_file = dataSetsBaseDir + 'production/GermlineVarCallRunEnv/preprocessing_hg38_intervals.yaml'
+  calling_yaml_file = dataSetsBaseDir + 'production/GermlineVarCallRunEnv/germline_varcall_hg38_intervals.yaml'
 elif args.reference == 'hg19':
-  reference_folder  = '/tsd/p172/docker/reference-data/hg19'
-  prepros_yaml_file = '/tsd/p172/docker/production/GermlineVarCallRunEnv/preprocessing_hg19.yaml'
-  calling_yaml_file = '/tsd/p172/docker/production/GermlineVarCallRunEnv/germline_varcall_hg19.yaml'
+  reference_folder  = dataSetsBaseDir + 'reference-data/hg19'
+  prepros_yaml_file = dataSetsBaseDir + 'production/GermlineVarCallRunEnv/preprocessing_hg19.yaml'
+  calling_yaml_file = dataSetsBaseDir + '/production/GermlineVarCallRunEnv/germline_varcall_hg19.yaml'
 elif args.reference == 'hg38':
-  reference_folder  = '/tsd/p172/docker/reference-data/hg38'
-  prepros_yaml_file = '/tsd/p172/docker/production/GermlineVarCallRunEnv/preprocessing_hg38.yaml'
-  calling_yaml_file = '/tsd/p172/docker/production/GermlineVarCallRunEnv/germline_varcall_hg38.yaml'
+  reference_folder  = dataSetsBaseDir + 'reference-data/hg38'
+  prepros_yaml_file = dataSetsBaseDir + 'production/GermlineVarCallRunEnv/preprocessing_hg38.yaml'
+  calling_yaml_file = dataSetsBaseDir + 'production/GermlineVarCallRunEnv/germline_varcall_hg38.yaml'
 else:
   print('Error: reference must be hg19 or hg38')
   exit()
@@ -176,7 +190,8 @@ preprocessing_name   = "germline_preprocessing_{0}".format(run_tag)
 variant_calling_name = "germline_variant_calling_{0}".format(run_tag)
 docker_prepros = build_docker_command(input_path, input_tsv, output_path, reference_folder, prepros_yaml_file, intervals, tmp_dir, custom_env, custom_user_id, container_id, preprocessing_name)
 docker_varcall = build_docker_command(input_path, input_tsv, output_path, reference_folder, calling_yaml_file, intervals, tmp_dir, custom_env, custom_user_id, container_id, variant_calling_name)
-
+# Clean dirs if prod mode
+# code here
 
 # --- Run ---
 if (preprocessing_wf == False) and (variantcalling_wf == False) :
@@ -186,11 +201,21 @@ if preprocessing_wf :
   print("Run preprocessing workflow, container tag is : {0}".format(run_tag))
   run_debug(docker_prepros)
   run_workflow(docker_prepros)
+  # Clean dirs if prod mode
+  if keep_intermediate_files == True:
+    clean_intermetdiate_files_from_dir(["01*","02*","03*"], ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals"])
 
 if variantcalling_wf :
   print("Run variant calling workflow, container tag is : {0}".format(run_tag))
   run_debug(docker_varcall)
   run_workflow(docker_varcall)
+  # Clean dirs if prod mode
+  if keep_intermediate_files == True:
+    clean_intermetdiate_files_from_dir(["11*","12*"], ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals"])
+    #clean_intermetdiate_files_from_dir(["FinishedSteps"], ["*.passed"])
+
+
+
 
 # clean tmp dir
 os.system("rm -rf {0}".format(tmp_dir))
