@@ -15,7 +15,7 @@ parser.add_argument("-r", "--reference",        type=str, required=True, help="H
 parser.add_argument("-l", "--intervals",        type=str, required=False, default=False, help="Optional intervals file")
 parser.add_argument("-p", "--preprocessing",    action='store_true', required=False, default=False, help="Run the preprocessing   part of the workflow")
 parser.add_argument("-v", "--variantcalling",   action='store_true', required=False, default=False, help="Run the variant calling part of the workflow")
-parser.add_argument("-k", "--keep_all_output",   action='store_true', required=False, default=False, help="Keep all intermediary output files after execution")
+parser.add_argument("-k", "--keep_all_output",  action='store_true', required=False, default=False, help="Keep all intermediary output files after execution")
 
 args = parser.parse_args()
 
@@ -133,7 +133,7 @@ input_path        = args.input_folder
 input_tsv         = args.input_tsv
 output_path       = args.output_folder
 
-keep_intermediate_files = args.keep_intermediate_files
+keep_all_output   = args.keep_all_output
 
 run_tag           = int(time.time()*1000) # epoch time in millisecond as tag
 
@@ -201,7 +201,7 @@ if preprocessing_wf :
   run_debug(docker_prepros)
   run_workflow(docker_prepros)
   # Clean dirs if prod mode
-  if keep_intermediate_files == True:
+  if keep_all_output == False:
     clean_intermetdiate_files_from_dir(["01*","02*","03*"], ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals"])
 
 if variantcalling_wf :
@@ -209,7 +209,7 @@ if variantcalling_wf :
   run_debug(docker_varcall)
   run_workflow(docker_varcall)
   # Clean dirs if prod mode
-  if keep_intermediate_files == True:
+  if keep_all_output == False:
     clean_intermetdiate_files_from_dir(["11*","12*"], ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals"])
     #clean_intermetdiate_files_from_dir(["FinishedSteps"], ["*.passed"])
 
