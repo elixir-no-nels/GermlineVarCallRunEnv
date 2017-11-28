@@ -29,13 +29,14 @@ def run_workflow(docker_command):
     sys.stdout.flush()
 
 
-def clean_intermetdiate_files_from_dir(dirs, files_to_remove):
+def clean_intermetdiate_files(output_path, dirs, files_to_remove):
   print("Cleanup intermediate files...")
   for dir in dirs:
     for file in files_to_remove:
     # Delete *sam and *bam from the dir startin by "dir"
-      os.system("rm -rf {0}/{1}".format(dir, file))
-
+      delete_cmd = "rm -rf {0}/{1}/{2}".format(output_path ,dir, file)
+      print(delete_cmd)
+      os.system(delete_cmd)
 
 
 def run_debug(command):
@@ -202,7 +203,9 @@ if preprocessing_wf :
   run_workflow(docker_prepros)
   # Clean dirs if prod mode
   if keep_all_output == False:
-    clean_intermetdiate_files_from_dir(["01*","02*","03*"], ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals"])
+    clean_intermetdiate_files(output_path,["01*","02*","03*"], ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals"])
+  # clean tmp dir
+  os.system("rm -rf {0}".format(tmp_dir))
 
 if variantcalling_wf :
   print("Run variant calling workflow, container tag is : {0}".format(run_tag))
@@ -210,11 +213,12 @@ if variantcalling_wf :
   run_workflow(docker_varcall)
   # Clean dirs if prod mode
   if keep_all_output == False:
-    clean_intermetdiate_files_from_dir(["11*","12*"], ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals"])
-    #clean_intermetdiate_files_from_dir(["FinishedSteps"], ["*.passed"])
+    clean_intermetdiate_files(output_path,["11*","12*"], ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals"])
+  # clean tmp dir
+  os.system("rm -rf {0}".format(tmp_dir))
 
-# clean tmp dir
-os.system("rm -rf {0}".format(tmp_dir))
-
+  # Clean up the current status of the workflow
+  if keep_all_output == False:
+    clean_intermetdiate_files(output_path,["FinishedSteps"], ["*.passed"])
 # fix outputs permissions
 os.system("chmod -R 775 {0}".format(output_path))
