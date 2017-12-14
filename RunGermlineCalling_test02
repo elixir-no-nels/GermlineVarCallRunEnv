@@ -118,7 +118,7 @@ is_absolute(args.output_folder)
 test_file(args.input_tsv)
 test_path(args.input_folder)
 test_path(args.output_folder)
-os.system("chmod -R 775 {0}".format(output_path))
+os.system("chmod -R 775 {0}/*".format(output_path))
 
 
 # --- Config ---
@@ -222,4 +222,4 @@ if variantcalling_wf :
   if keep_all_output == False:
     clean_intermetdiate_files(output_path,["FinishedSteps"], ["*.passed"])
 # fix outputs permissions
-os.system("chmod -R 775 {0}".format(output_path))
+os.system("chmod -R 775 {0}/*".format(output_path))
