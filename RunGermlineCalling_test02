@@ -118,6 +118,7 @@ is_absolute(args.output_folder)
 test_file(args.input_tsv)
 test_path(args.input_folder)
 test_path(args.output_folder)
+os.system("chmod -R 775 {0}".format(output_path))
 
 
 # --- Config ---
@@ -213,7 +214,7 @@ if variantcalling_wf :
   run_workflow(docker_varcall)
   # Clean dirs if prod mode
   if keep_all_output == False:
-    clean_intermetdiate_files(output_path,["11*","12*"], ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals"])
+    clean_intermetdiate_files(output_path,["11*","12*"], ["*.sam","*.bam","*.vcf","*.tranches","*.recal","*.intervals","*.idx"])
   # clean tmp dir
   os.system("rm -rf {0}".format(tmp_dir))
 
